@@ -1,5 +1,6 @@
 
 # Tutorial link: https://realpython.com/beautiful-soup-web-scraper-python/
+# XPATH tutorial reference added https://www.geeksforgeeks.org/how-to-use-xpath-with-beautifulsoup/
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
