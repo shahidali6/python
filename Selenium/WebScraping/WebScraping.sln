@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "WebScraping", "WebScraping\WebScraping.pyproj", "{F41E68B4-039D-45ED-8EC7-2AACCB32CCFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F41E68B4-039D-45ED-8EC7-2AACCB32CCFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F41E68B4-039D-45ED-8EC7-2AACCB32CCFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7108EC28-7D4F-4585-88AB-A074020A1AF8}
+	EndGlobalSection
+EndGlobal

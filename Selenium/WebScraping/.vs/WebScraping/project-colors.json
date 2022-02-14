@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "f41e68b4-039d-45ed-8ec7-2aaccb32ccff": {
+      "ProjectGuid": "f41e68b4-039d-45ed-8ec7-2aaccb32ccff",
+      "DisplayName": "WebScraping",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
