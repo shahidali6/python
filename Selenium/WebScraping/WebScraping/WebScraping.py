@@ -1,6 +1,7 @@
 
 # Tutorial link: https://realpython.com/beautiful-soup-web-scraper-python/
 # XPATH tutorial reference added https://www.geeksforgeeks.org/how-to-use-xpath-with-beautifulsoup/
+# Very useful tutorial link https://www.dataquest.io/blog/web-scraping-beautifulsoup/
 import requests
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -9,13 +10,13 @@ import csv
 URL = "https://www.olx.com.pk/lahore_g4060673"
 page = requests.get(URL)
 
-print(page.text)
+print(page.text[:500])
 
 soup = BeautifulSoup(page.content, "html.parser")
 
 #results = soup.find(id="ResultsContainer")
 results = soup.find(class_="ba608fb8")
-print(results.prettify())
+print(results.prettify()[:500])
 
 job_elements = results.find_all("div", class_="a52608cc")
 
