@@ -4,8 +4,8 @@
 # Very useful tutorial link https://www.dataquest.io/blog/web-scraping-beautifulsoup/
 import requests
 from bs4 import BeautifulSoup
-from lxml import etree
 import csv
+import mysql.connector
 
 URL = "https://www.olx.com.pk/lahore_g4060673"
 page = requests.get(URL)
@@ -69,6 +69,24 @@ for item in myList:
 
 # close the file
 f.close()
+
+#Insert Data into MySQL 
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="",
+  database="python"
+)
+
+mycursor = mydb.cursor()
+
+for item in myList:
+    sql = "INSERT INTO olx (title, price, location) VALUES (%s, %s, %s)"
+    val = (item)
+    mycursor.execute(sql, val)
+    mydb.commit()
+
+print(mycursor.rowcount, "record inserted in MytSQL Database.")
 
 
 
