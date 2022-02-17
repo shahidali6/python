@@ -42,10 +42,11 @@ for element in allElements:
         priceStart = element.find("div", class_="_52497c97").span.text.strip().replace("Rs", "").replace(",","").strip()
         priceEnd = ""
         if '|' in priceStart:
-            priceSplit = priceSplit.split('|',1)[2]
-            if priceSplit.len()>0:
-                priceStart = priceSplit[0]
-                priceEnd = priceSplit[1]
+            priceSplit = priceStart.split('|')
+            if len(priceSplit)>0:
+                finalSplit = priceSplit[0].split('-')
+                priceStart = finalSplit[0]
+                priceEnd = finalSplit[1]
         print(priceStart  +" | "+priceEnd)
         innerList.append(priceStart)
         innerList.append(priceEnd)
