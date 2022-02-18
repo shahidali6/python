@@ -6,18 +6,54 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import mysql.connector
+import datetime
+
+def WriteCSVFile(fileName, myList):
+    # open the file in the write mode
+    f = open(fileName+datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', encoding='UTF8')
+    
+    # create the csv writer
+    writer = csv.writer(f)
+    
+    # write a row to the csv file
+    writer.writerows(myList)
+
+    for item in myList:
+        writer.writerow(item)
+    
+    # close the file
+    f.close()
+    
+def InsertDataIntoMySQL(myList):
+    #Insert Data into MySQL 
+    mydb = mysql.connector.connect(
+      host="localhost",
+      user="root",
+      password="",
+      database="python"
+    )
+    
+    mycursor = mydb.cursor()
+    
+    for item in myList:
+        sql = "INSERT INTO olx (title, pricestart,priceend, location,image,link,feature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        val = (item)
+        mycursor.execute(sql, val)
+        mydb.commit()
+    
+    print(mycursor.rowcount, "record inserted in MytSQL Database.")
 #Lahore: "lahore_g4060673"
 baseURL = "https://www.olx.com.pk"
 URL = baseURL+ "/lahore_g4060673"
 page = requests.get(URL)
 
-print(page.text[:500])
+print(page.text[:100])
 
 soup = BeautifulSoup(page.content, "html.parser")
 
 #results = soup.find(id="ResultsContainer")
 results = soup.find(class_="ba608fb8")
-print(results.prettify()[:500])
+print(results.prettify()[:100])
 
 allElements = results.find_all("article", class_="_7e3920c1")
 
@@ -56,7 +92,7 @@ for element in allElements:
         innerList.append(0)
 
     try:
-        location = element.find("span", class_="_424bf2a8").text.strip()
+        location = element.find("span", class_="_424bf2a8").text.strip()[:-1]
         print(location)
         innerList.append(location)
     except :
@@ -92,35 +128,6 @@ for element in allElements:
     if innerList[6] == status:
         myList.append(innerList)
 
+WriteCSVFile("olx", myList)
+InsertDataIntoMySQL(myList)
 print("=========================================================")
-
-# open the file in the write mode
-f = open('csv_file.csv', 'w', encoding='UTF8')
-
-# create the csv writer
-writer = csv.writer(f)
-
-# write a row to the csv file
-for item in myList:
-    writer.writerow(item)
-
-# close the file
-f.close()
-
-#Insert Data into MySQL 
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="",
-  database="python"
-)
-
-mycursor = mydb.cursor()
-
-for item in myList:
-    sql = "INSERT INTO olx (title, pricestart,priceend, location,image,link,feature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (item)
-    mycursor.execute(sql, val)
-    mydb.commit()
-
-print(mycursor.rowcount, "record inserted in MytSQL Database.")
