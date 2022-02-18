@@ -6,8 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import mysql.connector
-
-URL = "https://www.olx.com.pk/lahore_g4060673"
+#Lahore: "lahore_g4060673"
+baseURL = "https://www.olx.com.pk"
+URL = baseURL+ "/lahore_g4060673"
 page = requests.get(URL)
 
 print(page.text[:500])
@@ -18,7 +19,7 @@ soup = BeautifulSoup(page.content, "html.parser")
 results = soup.find(class_="ba608fb8")
 print(results.prettify()[:500])
 
-job_elements = results.find_all("div", class_="a52608cc")
+allElements = results.find_all("article", class_="_7e3920c1")
 
 print("=========================================================")
 
@@ -27,33 +28,69 @@ status = "No element found"
 myList = [];
 
 
-for job_element in job_elements:
-    title_element = job_element.find("div", class_="a5112ca8")
-    company_element = job_element.find("div", class_="_52497c97")
-    location_element = job_element.find("span", class_="_424bf2a8")
-
+for element in allElements:
     innerList = []
     try:
-        print(title_element.text.strip())
-        innerList.append(title_element.text.strip())
+        title = element.find("div", class_="a5112ca8").text.strip()
+        print(title)
+        innerList.append(title)
     except :
         print(status)
         innerList.append(status)
+
     try:
-        print(company_element.text.strip())
-        innerList.append(company_element.text.strip())
+        priceStart = element.find("div", class_="_52497c97").span.text.strip().replace("Rs", "").replace(",","").strip()
+        priceEnd = ""
+        if '|' in priceStart:
+            priceSplit = priceStart.split('|')
+            if len(priceSplit)>0:
+                finalSplit = priceSplit[0].split('-')
+                priceStart = finalSplit[0]
+                priceEnd = finalSplit[1]
+        print(priceStart  +" | "+priceEnd)
+        innerList.append(priceStart)
+        innerList.append(priceEnd)
+    except :
+        print("0|0")
+        innerList.append(0)
+        innerList.append(0)
+
+    try:
+        location = element.find("span", class_="_424bf2a8").text.strip()
+        print(location)
+        innerList.append(location)
     except :
         print(status)
         innerList.append(status)
+        
     try:
-        print(location_element.text.strip())
-        innerList.append(location_element.text.strip())
+        image = element.find("source").get('srcset').strip()
+        print(image)
+        innerList.append(image)
+    except :
+        print(status)
+        innerList.append(status)
+        
+    try:
+        link = baseURL+ element.find("div", class_="ee2b0479").a.get('href').strip()
+        print(link)
+        innerList.append(link)
+    except :
+        print(status)
+        innerList.append(status)
+        
+    try:
+        feature = element.find("span", class_="_151bf64f").text.strip()
+        print(feature)
+        innerList.append(feature)
     except :
         print(status)
         innerList.append(status)
     
+    print(innerList)
     print("--------Next---------")
-    myList.append(innerList)
+    if innerList[6] == status:
+        myList.append(innerList)
 
 print("=========================================================")
 
@@ -81,12 +118,9 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 for item in myList:
-    sql = "INSERT INTO olx (title, price, location) VALUES (%s, %s, %s)"
+    sql = "INSERT INTO olx (title, pricestart,priceend, location,image,link,feature) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     val = (item)
     mycursor.execute(sql, val)
     mydb.commit()
 
 print(mycursor.rowcount, "record inserted in MytSQL Database.")
-
-
-
