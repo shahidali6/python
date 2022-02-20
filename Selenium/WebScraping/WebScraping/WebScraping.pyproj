@@ -11,6 +11,9 @@
     <OutputPath>.</OutputPath>
     <Name>WebScraping</Name>
     <RootNamespace>WebScraping</RootNamespace>
+    <TestFramework>none</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +24,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="olx.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
   <ItemGroup>
