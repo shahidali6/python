@@ -1,20 +1,31 @@
+# import date and time namespace
+import datetime
+# import CSV namespace to read and write CSV files.
+import csv
+
+#import namespaces to show error message
+from tkinter import * 
+from tkinter import messagebox
+
+
 class CSV:
-    def WriteCSVFile(fileName, myList):
-    # open the file in the write mode
-    f = open(fileName+datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', encoding='UTF8')
-    
-    # create the csv writer
-    writer = csv.writer(f)
-    
-    # write a row to the csv file
-    writer.writerows(myList)
+    def WriteCSVFile(fileName, listToWrite):
+        
+        try:
+            # open the file in the write mode
+            fileToRead = open(
+                fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', encoding='UTF8')
 
-    for item in myList:
-        writer.writerow(item)
-    
-    # close the file
-    f.close()
+            # create the csv writer
+            csvWriter = csv.writer(fileToRead)
 
+            # write a row to the csv file
+            csvWriter.writerows(listToWrite)
 
+            for line in listToWrite:
+                csvWriter.writerow(line)
 
-
+            # close the file
+            fileToRead.close()
+        except ex:
+            messagebox.showerror("Exception Message", "Exception: "+ex)
