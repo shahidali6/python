@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 import csv
 import mysql.connector
 import datetime
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 def WriteCSVFile(fileName, myList):
     # open the file in the write mode
@@ -26,11 +28,16 @@ def WriteCSVFile(fileName, myList):
     
 def InsertDataIntoMySQL(myList):
     #Insert Data into MySQL 
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="python"
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="python"
+      host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com",
+      user="dbadmin",
+      password="Aesn8POSA2kTzjt1GAk9",
+      database="db-python-webscraping"
     )
     
     mycursor = mydb.cursor()
@@ -43,17 +50,87 @@ def InsertDataIntoMySQL(myList):
     
     print(mycursor.rowcount, "record inserted in MytSQL Database.")
 #Lahore: "lahore_g4060673"
-baseURL = "https://www.olx.com.pk"
-URL = baseURL+ "/lahore_g4060673"
-page = requests.get(URL)
+#baseURL = "https://www.olx.com.pk"
+#URL = baseURL+ "/lahore_g4060673"
+baseURL = "https://www.airliftexpress.com/"
 
-print(page.text[:100])
+driver = webdriver.Chrome()
+driver.get(baseURL)
+
+#identify text box
+countryXpath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[1]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
+getElement = driver.find_element_by_xpath(countryXpath)
+#send input
+getElement.send_keys("Pakistan")
+getElement.send_keys(Keys.ARROW_DOWN)
+#send keyboard input
+getElement.send_keys(Keys.RETURN)
+getElement.send_keys(Keys.TAB)
+cityxPath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[2]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
+getElement = driver.find_element_by_xpath(cityxPath)
+getElement.send_keys("Sialkot")
+driver.implicitly_wait(0.5)
+getElement.send_keys(Keys.ARROW_DOWN)
+#send keyboard input
+getElement.send_keys(Keys.RETURN)
+
+getElement.send_keys(Keys.TAB)
+driver.implicitly_wait(0.5)
+areXpath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div[2]/div[1]/div/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
+getElement = driver.find_element_by_xpath(areXpath)
+getElement.send_keys("Neka Pura, Sialkot, Punjab, Pakistan")
+getElement.send_keys(Keys.RETURN)
+driver.implicitly_wait(0.5)
+
+continueButtonxPath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div[2]/div[3]/button"
+getElement = driver.find_element_by_xpath(continueButtonxPath).click()
+
+
+i = driver.find_element_by_xpath("//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[1]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input")
+
+s = requests.Session()
+# Set correct user agent
+selenium_user_agent = driver.execute_script("return navigator.userAgent;")
+s.headers.update({"user-agent": selenium_user_agent})
+
+for cookie in driver.get_cookies():
+    s.cookies.set(cookie['name'], cookie['value'], domain=cookie['domain'])
+
+response = s.get(baseURL)
+
+
+
+
+
+
+
+
+
+
+
+
+
+interdic = {"address":"Neka Pura, Sialkot, Punjab, Pakistan","name":"Neka Pura, Sialkot, Punjab, Pakistan","placeId":"ChIJcWmQs4fqHjkRRf7DH3jsA7U","latitude":32.4851972,"longitude":74.54779289999999,"city":"Sialkot","country":"Pakistan"}	
+cookies_dict = {"warehouseTimeZone": "Asia/Karachi", 
+                "deliveryLocation":interdic,
+                "cityId":"101",
+                "warehouseId":"6268",
+                "countryId":"1"
+                }
+
+
+URL = baseURL+ "/product-category/frozen"
+page = requests.get(URL,cookies_dict)
+curSession = requests.Session() 
+getCookies = curSession.get(URL)
+
+#print(page.text)
 
 soup = BeautifulSoup(page.content, "html.parser")
 
 #results = soup.find(id="ResultsContainer")
 results = soup.find(class_="ba608fb8")
-print(results.prettify()[:100])
+print(results)
 
 allElements = results.find_all("article", class_="_7e3920c1")
 
@@ -128,6 +205,6 @@ for element in allElements:
     if innerList[6] == status:
         myList.append(innerList)
 
-WriteCSVFile("olx", myList)
+CSV.WriteCSVFile("olx", myList)
 InsertDataIntoMySQL(myList)
 print("=========================================================")
