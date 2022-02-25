@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f41e68b4-039d-45ed-8ec7-2aaccb32ccff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>WebScraping.py</StartupFile>
+    <StartupFile>time_logger_digital_attendance_system.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -24,12 +24,18 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="common\file\csv_operations.py" />
     <Compile Include="CSV.py" />
     <Compile Include="olx.py" />
+    <Compile Include="time_logger_digital_attendance_system.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="common\" />
+    <Folder Include="common\file\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

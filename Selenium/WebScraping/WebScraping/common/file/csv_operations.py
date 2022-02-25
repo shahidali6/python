@@ -2,6 +2,7 @@
 import datetime
 # import CSV namespace to read and write CSV files.
 import csv
+from os import read
 
 #import namespaces to show error message
 from tkinter import * 
@@ -19,10 +20,10 @@ class csv_operations:
             csvWriter = csv.writer(fileToRead)
 
             # write a row to the csv file
-            #csvWriter.writerows(listToWrite)
+            csvWriter.writerows(listToWrite)
 
-            for line in listToWrite:
-                csvWriter.writerow(line)
+            #for line in listToWrite:
+            #    csvWriter.writerow(line)
 
             # close the file
             fileToRead.close()
@@ -31,22 +32,15 @@ class csv_operations:
             messagebox.showerror("Exception Message", "Exception: "+ex)
             return False
 
-    def read_csvfile(fileName, listToWrite):   
+    def read_csvfile(self, fileName):   
         try:
-            # open the file in the write mode
-            fileToRead = open(
-                fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', encoding='UTF8')
-
-            # create the csv writer
-            csvWriter = csv.writer(fileToRead)
-
-            # write a row to the csv file
-            csvWriter.writerows(listToWrite)
-
-            for line in listToWrite:
-                csvWriter.writerow(line)
-
-            # close the file
-            fileToRead.close()
+            return_list = []
+            with open(fileName, 'r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    print(row)
+                    if len(row) > 0:
+                        return_list.append(row)
+            return return_list
         except ex:
             messagebox.showerror("Exception Message", "Exception: "+ex)
