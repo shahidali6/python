@@ -25,8 +25,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="common\file\csv_operations.py" />
-    <Compile Include="CSV.py" />
     <Compile Include="olx.py" />
+    <Compile Include="selenium\driver_chrome.py" />
     <Compile Include="time_logger_digital_attendance_system.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="common\" />
     <Folder Include="common\file\" />
+    <Folder Include="selenium\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
