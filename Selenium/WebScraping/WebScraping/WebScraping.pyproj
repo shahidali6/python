@@ -14,6 +14,7 @@
     <TestFramework>none</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
     <UnitTestRootDirectory>.</UnitTestRootDirectory>
+    <InterpreterId>MSBuild|python_39_64|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,7 +27,8 @@
   <ItemGroup>
     <Compile Include="common\file\csv_operations.py" />
     <Compile Include="olx.py" />
-    <Compile Include="selenium\driver_chrome.py" />
+    <Compile Include="selenium_operations\driver_chrome.py" />
+    <Compile Include="selenium_operations\__init__.py" />
     <Compile Include="time_logger_digital_attendance_system.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
@@ -36,7 +38,18 @@
   <ItemGroup>
     <Folder Include="common\" />
     <Folder Include="common\file\" />
-    <Folder Include="selenium\" />
+    <Folder Include="selenium_operations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="python_39_64\">
+      <Id>python_39_64</Id>
+      <Version>3.9</Version>
+      <Description>python_39_64 (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
