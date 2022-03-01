@@ -131,3 +131,4 @@ dmypy.json
 *.testlog
 /.vs
 /Selenium/WebScraping/WebScraping/csv_file.csv
+/Selenium/WebScraping/.vs/WebScraping/v17
