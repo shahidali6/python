@@ -5,7 +5,7 @@ import csv
 from os import read
 
 #import namespaces to show error message
-from tkinter import * 
+#from tkinter import * 
 from tkinter import messagebox
 
 # Write csv file based on the file name and list of string
@@ -28,8 +28,8 @@ class csv_operations:
             # close the file
             fileToRead.close()
             return True
-        except ex:
-            messagebox.showerror("Exception Message", "Exception: "+ex)
+        except Exception as ex:
+            messagebox.showerror("Exception Message", "Exception: "+str(ex))
             return False
 
     def read_csvfile(self, fileName):   
@@ -42,5 +42,5 @@ class csv_operations:
                     if len(row) > 0:
                         return_list.append(row)
             return return_list
-        except ex:
-            messagebox.showerror("Exception Message", "Exception: "+ex)
+        except Exception as ex:
+            messagebox.showerror("Exception Message", "Exception: "+str(ex))
