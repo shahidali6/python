@@ -106,6 +106,11 @@ class driver_chrome:
 
             cookiesItesm = driver.get_cookies()
 
+            for cookie in cookiesItesm:
+                s.cookies.set(cookie['name'], cookie['value'])
+
+            status = s.get(https://www.airliftexpress.com/product-category/promotions)
+
             requestCookiesList = []
 
             for cookie in cookiesItesm:
@@ -114,7 +119,8 @@ class driver_chrome:
                 for key, value in cookie.items():
                     #test =  cookie[cookie['name']] = cookie['value']
                     #one_cookie[cookie['name']] = cookie['value']
-                    one_cookie.update([key] = value)
+                    one_cookie = {cookie['name']: cookie['value']} 
+                    #one_cookie.update([key] = value)
 
                 requestCookiesList.append(one_cookie)
 
@@ -147,3 +153,9 @@ class driver_chrome:
 
         except Exception as ex:
             messagebox.showerror("Exception Message", "Exception: " + str(ex))
+        #headers = { "User-Agent": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" }
+        #s = requests.session() 
+        #s.headers.update(headers) 
+        #for cookie in driver.get_cookies(): 
+        #    c = {cookie['name']: cookie['value']} 
+        #    s.cookies.update(c)

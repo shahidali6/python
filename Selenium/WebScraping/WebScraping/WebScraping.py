@@ -52,7 +52,7 @@ def InsertDataIntoMySQL(myList):
 #Lahore: "lahore_g4060673"
 #baseURL = "https://www.olx.com.pk"
 #URL = baseURL+ "/lahore_g4060673"
-baseURL = "https://www.airliftexpress.com/"
+baseURL = "https://www.airliftexpress.com"
 
 driver = webdriver.Chrome()
 driver.get(baseURL)
