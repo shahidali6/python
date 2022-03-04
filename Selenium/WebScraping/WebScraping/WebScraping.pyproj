@@ -25,6 +25,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="common\beautifulsoup_operations.py" />
     <Compile Include="common\file\csv_operations.py" />
     <Compile Include="olx.py" />
     <Compile Include="selenium_operations\driver_chrome.py" />
