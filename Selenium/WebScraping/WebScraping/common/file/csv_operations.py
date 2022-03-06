@@ -44,3 +44,14 @@ class csv_operations:
             return return_list
         except Exception as ex:
             messagebox.showerror("Exception Message", "Exception: "+str(ex))
+
+    def remove_first_line_of_file(self, fileName):   
+        try:
+            with open(fileName, 'r') as fin:
+                data = fin.read().splitlines(True)
+            with open(fileName, 'w') as fout:
+                fout.writelines(data[1:])
+            return True
+        except Exception as ex:
+            messagebox.showerror("Exception Message", "Exception: "+str(ex))
+            return False
