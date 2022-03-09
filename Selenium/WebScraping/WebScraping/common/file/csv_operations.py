@@ -55,3 +55,12 @@ class csv_operations:
         except Exception as ex:
             messagebox.showerror("Exception Message", "Exception: "+str(ex))
             return False
+
+    def save_webpage_source(self, file_name, page_source):
+        try:
+            with open(file_name, 'w') as f:
+                f.write(page_source)
+            return True
+        except Exception as ex:
+            messagebox.showerror("Exception Message", "Exception: "+str(ex))
+            return False
