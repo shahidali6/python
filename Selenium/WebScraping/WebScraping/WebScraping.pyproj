@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f41e68b4-039d-45ed-8ec7-2aaccb32ccff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>time_logger_digital_attendance_system.py</StartupFile>
+    <StartupFile>working\airlift_scrap.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,10 +27,15 @@
   <ItemGroup>
     <Compile Include="common\beautifulsoup_operations.py" />
     <Compile Include="common\file\csv_operations.py" />
+    <Compile Include="common\file\database_operations.py" />
+    <Compile Include="common\file\file_operations.py" />
+    <Compile Include="common\request_operations.py" />
     <Compile Include="olx.py" />
     <Compile Include="selenium_operations\driver_chrome.py" />
-    <Compile Include="selenium_operations\__init__.py" />
+    <Compile Include="working\airlift_scrap.py" />
+    <Compile Include="working\read_proxies_write_csv.py" />
     <Compile Include="time_logger_digital_attendance_system.py" />
+    <Compile Include="working\useragent.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +44,7 @@
   <ItemGroup>
     <Folder Include="common\" />
     <Folder Include="common\file\" />
+    <Folder Include="working\" />
     <Folder Include="selenium_operations\" />
   </ItemGroup>
   <ItemGroup>
