@@ -12,6 +12,8 @@ from selenium.webdriver.common.keys import Keys
 from common.file.csv_operations import csv_operations
 #for cookies saving and read back
 import pickle
+#for wait
+import time
    
 #Lahore: "lahore_g4060673"
 #baseURL = "https://www.olx.com.pk"
@@ -22,15 +24,50 @@ driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(baseURL)
 
-cookies = pickle.load(open("cookies.pkl", "rb"))
+cookies = pickle.load(open("airlift_nekapura.pkl", "rb"))
 for cookie in cookies:
     driver.add_cookie(cookie)
 file_operat = csv_operations()
 driver.get(baseURL)
 
-driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
+#driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
+driver.get('https://www.airliftexpress.com/product-category/promotions')
+
+time.sleep(5)
+
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+all_products = soup.findAll('div', class_='product-card ng-star-inserted')
+
+for product in all_products:
+    name = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text
+    price = product.find('div', class_='pc-cost ng-star-inserted').text
+    image = product.find('img', class_='pc-img').attrs['src']
+    coin = product.find('div', class_='pc-rewards ng-star-inserted').text
+    try:
+        orignal_price = product.find('div', class_='pc-p-old ng-star-inserted').text
+    except :
+        orignal_price = '0'
+    try:
+        discount_percentage = product.find('div', class_='pc-tag ng-star-inserted').text
+    except :
+        discount_percentage = '0'
+    try:
+        product_avalible = product.find('button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text
+    except :
+        product_avalible = 'Out of Stock'
+
+    print(name)
+    print(price)
+    print(image)
+    print(coin)
+    print(orignal_price)
+    print(discount_percentage)
+    print(product_avalible)
+    print('-----------------------------------------------')
 
 status = file_operat.save_webpage_source('promotions.html',driver.page_source)
+
 
 #identify text box
 countryXpath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[1]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
