@@ -5,7 +5,6 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-import mysql.connector
 import datetime
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +13,41 @@ from common.file.csv_operations import csv_operations
 import pickle
 #for wait
 import time
-   
+
+# function to return avalible and out of stock string
+def product_in_stock(args):
+    add_to_cart = 'Add to Cart'
+    avalible = 'avalible'
+    not_avalible = 'out of stock'
+    if args.strip() == add_to_cart:
+        return avalible 
+    else:
+        return not_avalible
+
+# function to return pecentage value for example 5 % OFF
+def percentage_value_filter(args):
+    string_array = args.strip().split(' ')
+    if len(string_array) > 1:
+        return string_array[0]
+    else:
+        return string_array[0]
+
+# function to return price value for example Rs 55
+def price_value_filter(args):
+    string_array = args.strip().split(' ')
+    if len(string_array) > 1:
+        return string_array[1]
+    else:
+        return string_array[0]
+
+# function to return coin value for example + 55
+def coin_value_filter(args):
+    string_array = args.strip().split('  ')
+    if len(string_array) > 1:
+        return string_array[1]
+    else:
+        return string_array[0]
+
 #Lahore: "lahore_g4060673"
 #baseURL = "https://www.olx.com.pk"
 #URL = baseURL+ "/lahore_g4060673"
@@ -24,48 +57,85 @@ driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(baseURL)
 
-cookies = pickle.load(open("airlift_nekapura.pkl", "rb"))
+cookies = pickle.load(open("airlift_nekapura_sialkot.pkl", "rb"))
 for cookie in cookies:
     driver.add_cookie(cookie)
 file_operat = csv_operations()
 driver.get(baseURL)
+
+#save cookies
+#pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
 
 #driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
 driver.get('https://www.airliftexpress.com/product-category/promotions')
 
 time.sleep(5)
 
-soup = BeautifulSoup(driver.page_source, 'html.parser')
+last_product_1 = ''
+last_product_2 = ''
+external_list = []
+while True:
+    #internal_list = []
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-all_products = soup.findAll('div', class_='product-card ng-star-inserted')
+    raw_location = soup.find('span', class_='dlb-location').text
+    location = raw_location
 
-for product in all_products:
-    name = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text
-    price = product.find('div', class_='pc-cost ng-star-inserted').text
-    image = product.find('img', class_='pc-img').attrs['src']
-    coin = product.find('div', class_='pc-rewards ng-star-inserted').text
-    try:
-        orignal_price = product.find('div', class_='pc-p-old ng-star-inserted').text
-    except :
-        orignal_price = '0'
-    try:
-        discount_percentage = product.find('div', class_='pc-tag ng-star-inserted').text
-    except :
-        discount_percentage = '0'
-    try:
-        product_avalible = product.find('button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text
-    except :
-        product_avalible = 'Out of Stock'
+    all_products = soup.findAll('div', class_='product-card ng-star-inserted')
 
-    print(name)
-    print(price)
-    print(image)
-    print(coin)
-    print(orignal_price)
-    print(discount_percentage)
-    print(product_avalible)
-    print('-----------------------------------------------')
+    for product in all_products:
+        very_internal = []
+        location = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
+        name = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
+        price = product.find('div', class_='pc-cost ng-star-inserted').text.strip()
+        image = product.find('img', class_='pc-img').attrs['src'].strip()
+        coin = product.find('div', class_='pc-rewards ng-star-inserted').text.strip()
+        try:
+            orignal_price = product.find('div', class_='pc-p-old ng-star-inserted').text.strip()
+        except :
+            orignal_price = '0'
+        try:
+            discount_percentage = product.find('div', class_='pc-tag ng-star-inserted').text.strip()
+        except :
+            discount_percentage = '0'
+        try:
+            product_avalible = product.find('button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text.strip()
+        except :
+            product_avalible = 'Out of Stock'
 
+        very_internal.append(name)
+        very_internal.append(price_value_filter(price))
+        very_internal.append(image)
+        very_internal.append(coin_value_filter(coin))
+        very_internal.append(price_value_filter(orignal_price))
+        very_internal.append(percentage_value_filter(discount_percentage))
+        very_internal.append(product_in_stock(product_avalible))
+
+        print(name)
+        print(price_value_filter(price))
+        print(image)
+        print(coin_value_filter(coin))
+        print(price_value_filter(orignal_price))
+        print(percentage_value_filter(discount_percentage))
+        print(product_in_stock(product_avalible))
+        print('-----------------------------------------------')
+
+        last_product_2 = name
+        external_list.append(very_internal)
+
+    body = driver.find_element_by_css_selector('body')
+    body.click()
+    body.send_keys(Keys.PAGE_DOWN)
+    time.sleep(5)
+
+    if last_product_1 == last_product_2:
+        break
+
+    #external_list.append(internal_list)
+    last_product_1 = last_product_2
+
+csv = csv_operations()
+stasts = csv.write_csvfile('airlift_product', external_list)
 status = file_operat.save_webpage_source('promotions.html',driver.page_source)
 
 
