@@ -14,6 +14,8 @@ import pickle
 #for wait
 import time
 
+from common.file.database_operations import database_operations
+
 # function to return avalible and out of stock string
 def product_in_stock(args):
     add_to_cart = 'Add to Cart'
@@ -71,6 +73,8 @@ driver.get('https://www.airliftexpress.com/product-category/promotions')
 
 time.sleep(5)
 
+db_operation = database_operations()
+
 last_product_1 = ''
 last_product_2 = ''
 external_list = []
@@ -78,17 +82,16 @@ while True:
     #internal_list = []
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-    raw_location = soup.find('span', class_='dlb-location').text
-    location = raw_location
+    location = soup.find('span', class_='dlb-location').text
 
     all_products = soup.findAll('div', class_='product-card ng-star-inserted')
 
     for product in all_products:
         very_internal = []
-        location = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
         name = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
         price = product.find('div', class_='pc-cost ng-star-inserted').text.strip()
         image = product.find('img', class_='pc-img').attrs['src'].strip()
+        link = product.find('a', class_='cursor-pointer').attrs['href'].strip()
         coin = product.find('div', class_='pc-rewards ng-star-inserted').text.strip()
         try:
             orignal_price = product.find('div', class_='pc-p-old ng-star-inserted').text.strip()
@@ -106,19 +109,25 @@ while True:
         very_internal.append(name)
         very_internal.append(price_value_filter(price))
         very_internal.append(image)
+        very_internal.append(link)
         very_internal.append(coin_value_filter(coin))
         very_internal.append(price_value_filter(orignal_price))
         very_internal.append(percentage_value_filter(discount_percentage))
         very_internal.append(product_in_stock(product_avalible))
+        very_internal.append(location)
 
         print(name)
         print(price_value_filter(price))
         print(image)
+        print(link)
         print(coin_value_filter(coin))
         print(price_value_filter(orignal_price))
         print(percentage_value_filter(discount_percentage))
         print(product_in_stock(product_avalible))
+        print(location)
         print('-----------------------------------------------')
+
+        db_operation.insert_data_into_airlift_table(very_internal)
 
         last_product_2 = name
         external_list.append(very_internal)
