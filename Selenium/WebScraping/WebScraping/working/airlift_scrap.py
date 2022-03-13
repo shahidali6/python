@@ -145,8 +145,11 @@ while True:
 
     body = driver.find_element_by_css_selector('body')
     body.click()
+    #body.send_keys(Keys.PAGE_DOWN)
+    #time.sleep(0.5)
     body.send_keys(Keys.PAGE_DOWN)
     time.sleep(SCROLL_PAUSE_TIME)
+
     #    
     # Scroll down to bottom
     #driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
