@@ -2,12 +2,14 @@
 # Tutorial link: https://realpython.com/beautiful-soup-web-scraper-python/
 # XPATH tutorial reference added https://www.geeksforgeeks.org/how-to-use-xpath-with-beautifulsoup/
 # Very useful tutorial link https://www.dataquest.io/blog/web-scraping-beautifulsoup/
+from typing import final
 import requests
 from bs4 import BeautifulSoup
 import csv
 import datetime
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from common.file.csv_operations import csv_operations
 #for cookies saving and read back
 import pickle
@@ -18,6 +20,7 @@ from common.file.database_operations import database_operations
 
 # function to return avalible and out of stock string
 def product_in_stock(args):
+    #Expacted value is Add to Cart
     add_to_cart = 'Add to Cart'
     avalible = 'avalible'
     not_avalible = 'out of stock'
@@ -44,6 +47,7 @@ def price_value_filter(args):
 
 # function to return coin value for example + 55
 def coin_value_filter(args):
+    #two spaces defined in HTML file that's reason to split with double spaces
     string_array = args.strip().split('  ')
     if len(string_array) > 1:
         return string_array[1]
@@ -58,12 +62,14 @@ baseURL = "https://www.airliftexpress.com"
 driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(baseURL)
+time.sleep(5)
 
 cookies = pickle.load(open("airlift_nekapura_sialkot.pkl", "rb"))
 for cookie in cookies:
     driver.add_cookie(cookie)
 file_operat = csv_operations()
 driver.get(baseURL)
+time.sleep(5)
 
 #save cookies
 #pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
@@ -75,6 +81,9 @@ time.sleep(5)
 
 db_operation = database_operations()
 
+last_height=-1
+SCROLL_PAUSE_TIME = 1
+finalbreak = 0
 last_product_1 = ''
 last_product_2 = ''
 external_list = []
@@ -85,6 +94,8 @@ while True:
     location = soup.find('span', class_='dlb-location').text
 
     all_products = soup.findAll('div', class_='product-card ng-star-inserted')
+    if len(all_products) == 0:
+        all_products = soup.findAll('div', class_='product-card product-na ng-star-inserted')        
 
     for product in all_products:
         very_internal = []
@@ -135,13 +146,41 @@ while True:
     body = driver.find_element_by_css_selector('body')
     body.click()
     body.send_keys(Keys.PAGE_DOWN)
-    time.sleep(5)
+    time.sleep(SCROLL_PAUSE_TIME)
+    #    
+    # Scroll down to bottom
+    #driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
+    # Wait to load page
+    #time.sleep(SCROLL_PAUSE_TIME)
+
+    # Calculate new scroll height and compare with last scroll height
     if last_product_1 == last_product_2:
-        break
-
-    #external_list.append(internal_list)
+        finalbreak = finalbreak+1
+        if finalbreak > 5:
+            break
+    else:
+        finalbreak = 0
     last_product_1 = last_product_2
+    #last_height = new_height
+
+
+
+
+    #bottom_footer = driver.find_element_by_xpath("/html/body/ecp-root/ecp-main-shell/div/div/div/div/ecp-app-footer/footer/ecp-footer-bottom/section")
+    #bottom_footer.click()
+    ##bottom_footer = driver.find_element_by_class_name('ecp-footer-bottom').click()
+    ##body.click()
+    ##body.send_keys(Keys.PAGE_DOWN)
+    ##time.sleep(5)
+
+    #if last_product_1 == last_product_2:
+    #    finalbreak = finalbreak+1
+    #    if finalbreak > 3:
+    #        break
+
+    ##external_list.append(internal_list)
+    #last_product_1 = last_product_2
 
 csv = csv_operations()
 stasts = csv.write_csvfile('airlift_product', external_list)
