@@ -190,33 +190,6 @@ stasts = csv.write_csvfile('airlift_product', external_list)
 status = file_operat.save_webpage_source('promotions.html',driver.page_source)
 
 
-#identify text box
-countryXpath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[1]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
-getElement = driver.find_element_by_xpath(countryXpath)
-#send input
-getElement.send_keys("Pakistan")
-getElement.send_keys(Keys.ARROW_DOWN)
-#send keyboard input
-getElement.send_keys(Keys.RETURN)
-getElement.send_keys(Keys.TAB)
-cityxPath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[2]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
-getElement = driver.find_element_by_xpath(cityxPath)
-getElement.send_keys("Sialkot")
-driver.implicitly_wait(0.5)
-getElement.send_keys(Keys.ARROW_DOWN)
-#send keyboard input
-getElement.send_keys(Keys.RETURN)
-
-getElement.send_keys(Keys.TAB)
-driver.implicitly_wait(0.5)
-areXpath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div[2]/div[1]/div/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input"
-getElement = driver.find_element_by_xpath(areXpath)
-getElement.send_keys("Neka Pura, Sialkot")
-driver.implicitly_wait(1)
-
-area_item_xpath = '//*[@id="cdk-overlay-5"]/nz-option-container/div/cdk-virtual-scroll-viewport/div[1]/nz-option-item[1]'
-#getElement.send_keys(Keys.ARROW_DOWN)
-getElement = driver.find_element_by_xpath(area_item_xpath).click
 
 #save cookies
 pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
