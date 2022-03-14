@@ -61,6 +61,7 @@ def coin_value_filter(args):
 baseURL = "https://www.airliftexpress.com"
 
 #Fake user agent tested.
+#https://stackoverflow.com/questions/27652543/how-to-use-python-requests-to-fake-a-browser-visit-a-k-a-and-generate-user-agent
 fake_user_agent = UserAgent()
 for x in range(20):
     print(fake_user_agent.random)   
