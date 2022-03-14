@@ -15,6 +15,7 @@ from common.file.csv_operations import csv_operations
 import pickle
 #for wait
 import time
+from fake_useragent import UserAgent
 
 from common.file.database_operations import database_operations
 
@@ -58,6 +59,11 @@ def coin_value_filter(args):
 #baseURL = "https://www.olx.com.pk"
 #URL = baseURL+ "/lahore_g4060673"
 baseURL = "https://www.airliftexpress.com"
+
+#Fake user agent tested.
+fake_user_agent = UserAgent()
+for x in range(20):
+    print(fake_user_agent.random)   
 
 driver = webdriver.Chrome()
 driver.maximize_window()
