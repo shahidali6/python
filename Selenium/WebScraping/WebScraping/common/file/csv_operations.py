@@ -15,7 +15,7 @@ class csv_operations:
         try:
             # open the file in the write mode
             fileToRead = open(
-                fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', encoding='UTF8')
+                fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv', 'w', newline='', encoding='UTF8')
 
             # create the csv writer
             csvWriter = csv.writer(fileToRead)
@@ -78,7 +78,7 @@ class csv_operations:
         #  ['Prateek', 'MCE', '3', '7.8'],
         #  ['Sahil', 'EP', '2', '9.1']]
 
-        with open(fileName, 'w') as f:
+        with open(fileName, 'w', newline='') as f:
 
             # using csv.writer method from CSV package
             write = csv.writer(f)
