@@ -64,3 +64,23 @@ class csv_operations:
         except Exception as ex:
             messagebox.showerror("Exception Message", "Exception: "+str(ex))
             return False
+
+    def write_list_to_csv(self, fileName, listToWrite):
+        # field names
+        fields = ['Name', 'Branch', 'Year', 'CGPA']
+	    fileName = fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.csv'
+        ## data rows of csv file
+        #rows = [ ['Nikhil', 'COE', '2', '9.0'],
+		      #  ['Sanchit', 'COE', '2', '9.1'],
+		      #  ['Aditya', 'IT', '2', '9.3'],
+		      #  ['Sagar', 'SE', '1', '9.5'],
+		      #  ['Prateek', 'MCE', '3', '7.8'],
+		      #  ['Sahil', 'EP', '2', '9.1']]
+
+        with open(fileName, 'w') as f:
+	
+	        # using csv.writer method from CSV package
+	        write = csv.writer(f)
+	
+	        write.writerow(fields)
+	        write.writerows(listToWrite)

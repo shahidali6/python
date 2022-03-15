@@ -9,4 +9,4 @@ csv = csv_operations()
 
 csv.write_csvfile("ListofProxy", list_of_proxyies)
 
-print("ppppp")
+print("file written!")

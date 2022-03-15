@@ -71,6 +71,7 @@ driver.maximize_window()
 driver.get(baseURL)
 time.sleep(5)
 
+#load saved cookies
 cookies = pickle.load(open("airlift_nekapura_sialkot.pkl", "rb"))
 for cookie in cookies:
     driver.add_cookie(cookie)
@@ -88,14 +89,12 @@ time.sleep(5)
 
 db_operation = database_operations()
 
-last_height=-1
 SCROLL_PAUSE_TIME = 1
 finalbreak = 0
 last_product_1 = ''
 last_product_2 = ''
 external_list = []
 while True:
-    #internal_list = []
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
     location = soup.find('span', class_='dlb-location').text
@@ -134,37 +133,27 @@ while True:
         very_internal.append(product_in_stock(product_avalible))
         very_internal.append(location)
 
-        print(name)
-        print(price_value_filter(price))
-        print(image)
-        print(link)
-        print(coin_value_filter(coin))
-        print(price_value_filter(orignal_price))
-        print(percentage_value_filter(discount_percentage))
-        print(product_in_stock(product_avalible))
-        print(location)
-        print('-----------------------------------------------')
+        #print(name)
+        #print(price_value_filter(price))
+        #print(image)
+        #print(link)
+        #print(coin_value_filter(coin))
+        #print(price_value_filter(orignal_price))
+        #print(percentage_value_filter(discount_percentage))
+        #print(product_in_stock(product_avalible))
+        #print(location)
+        #print('-----------------------------------------------')
 
-        db_operation.insert_data_into_airlift_table(very_internal)
+        #db_operation.insert_data_into_airlift_table(very_internal)
 
         last_product_2 = name
         external_list.append(very_internal)
 
     body = driver.find_element_by_css_selector('body')
     body.click()
-    #body.send_keys(Keys.PAGE_DOWN)
-    #time.sleep(0.5)
     body.send_keys(Keys.PAGE_DOWN)
     time.sleep(SCROLL_PAUSE_TIME)
 
-    #    
-    # Scroll down to bottom
-    #driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-    # Wait to load page
-    #time.sleep(SCROLL_PAUSE_TIME)
-
-    # Calculate new scroll height and compare with last scroll height
     if last_product_1 == last_product_2:
         finalbreak = finalbreak+1
         if finalbreak > 5:
@@ -172,167 +161,7 @@ while True:
     else:
         finalbreak = 0
     last_product_1 = last_product_2
-    #last_height = new_height
-
-
-
-
-    #bottom_footer = driver.find_element_by_xpath("/html/body/ecp-root/ecp-main-shell/div/div/div/div/ecp-app-footer/footer/ecp-footer-bottom/section")
-    #bottom_footer.click()
-    ##bottom_footer = driver.find_element_by_class_name('ecp-footer-bottom').click()
-    ##body.click()
-    ##body.send_keys(Keys.PAGE_DOWN)
-    ##time.sleep(5)
-
-    #if last_product_1 == last_product_2:
-    #    finalbreak = finalbreak+1
-    #    if finalbreak > 3:
-    #        break
-
-    ##external_list.append(internal_list)
-    #last_product_1 = last_product_2
 
 csv = csv_operations()
 stasts = csv.write_csvfile('airlift_product', external_list)
 status = file_operat.save_webpage_source('promotions.html',driver.page_source)
-
-
-
-#save cookies
-pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
-
-#time.sleep(10)
-print(driver.get_cookies())
-driver.implicitly_wait(1)
-getElement.send_keys(Keys.RETURN)
-getElement.send_keys(Keys.RETURN)
-driver.implicitly_wait(1)
-
-continueButtonxPath = "//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div[2]/div[3]/button"
-getElement = driver.find_element_by_xpath(continueButtonxPath).click()
-
-driver.get('https://www.airliftexpress.com/product-category/promotions')
-
-i = driver.find_element_by_xpath("//*[@id=\"cdk-overlay-0\"]/nz-modal-container/div/div/div/ecp-update-delivery-location/ecp-lazy-google-map-wrapper/div/div[2]/form/div/div/div[1]/nz-form-item/nz-form-control/div/div/nz-select/nz-select-top-control/nz-select-search/input")
-
-s = requests.Session()
-# Set correct user agent
-selenium_user_agent = driver.execute_script("return navigator.userAgent;")
-s.headers.update({"user-agent": selenium_user_agent})
-
-for cookie in driver.get_cookies():
-    s.cookies.set(cookie['name'], cookie['value'], domain=cookie['domain'])
-
-response = s.get(baseURL)
-
-
-
-
-
-
-
-
-
-
-
-
-
-interdic = {"address":"Neka Pura, Sialkot, Punjab, Pakistan","name":"Neka Pura, Sialkot, Punjab, Pakistan","placeId":"ChIJcWmQs4fqHjkRRf7DH3jsA7U","latitude":32.4851972,"longitude":74.54779289999999,"city":"Sialkot","country":"Pakistan"}	
-cookies_dict = {"warehouseTimeZone": "Asia/Karachi", 
-                "deliveryLocation":interdic,
-                "cityId":"101",
-                "warehouseId":"6268",
-                "countryId":"1"
-                }
-
-
-URL = baseURL+ "/product-category/frozen"
-page = requests.get(URL,cookies_dict)
-curSession = requests.Session() 
-getCookies = curSession.get(URL)
-
-#print(page.text)
-
-soup = BeautifulSoup(page.content, "html.parser")
-
-#results = soup.find(id="ResultsContainer")
-results = soup.find(class_="ba608fb8")
-print(results)
-
-allElements = results.find_all("article", class_="_7e3920c1")
-
-print("=========================================================")
-
-status = "No element found"
-
-myList = [];
-
-
-for element in allElements:
-    innerList = []
-    try:
-        title = element.find("div", class_="a5112ca8").text.strip()
-        print(title)
-        innerList.append(title)
-    except :
-        print(status)
-        innerList.append(status)
-
-    try:
-        priceStart = element.find("div", class_="_52497c97").span.text.strip().replace("Rs", "").replace(",","").strip()
-        priceEnd = ""
-        if '|' in priceStart:
-            priceSplit = priceStart.split('|')
-            if len(priceSplit)>0:
-                finalSplit = priceSplit[0].split('-')
-                priceStart = finalSplit[0]
-                priceEnd = finalSplit[1]
-        print(priceStart  +" | "+priceEnd)
-        innerList.append(priceStart)
-        innerList.append(priceEnd)
-    except :
-        print("0|0")
-        innerList.append(0)
-        innerList.append(0)
-
-    try:
-        location = element.find("span", class_="_424bf2a8").text.strip()[:-1]
-        print(location)
-        innerList.append(location)
-    except :
-        print(status)
-        innerList.append(status)
-        
-    try:
-        image = element.find("source").get('srcset').strip()
-        print(image)
-        innerList.append(image)
-    except :
-        print(status)
-        innerList.append(status)
-        
-    try:
-        link = baseURL+ element.find("div", class_="ee2b0479").a.get('href').strip()
-        print(link)
-        innerList.append(link)
-    except :
-        print(status)
-        innerList.append(status)
-        
-    try:
-        feature = element.find("span", class_="_151bf64f").text.strip()
-        print(feature)
-        innerList.append(feature)
-    except :
-        print(status)
-        innerList.append(status)
-    
-    print(innerList)
-    print("--------Next---------")
-    if innerList[6] == status:
-        myList.append(innerList)
-
-CSV.WriteCSVFile("olx", myList)
-InsertDataIntoMySQL(myList)
-print("=========================================================")
-
