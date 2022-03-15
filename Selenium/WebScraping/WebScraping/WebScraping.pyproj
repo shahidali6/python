@@ -33,6 +33,7 @@
     <Compile Include="olx.py" />
     <Compile Include="selenium_operations\driver_chrome.py" />
     <Compile Include="working\airlift_scrap.py" />
+    <Compile Include="working\olx_scrap.py" />
     <Compile Include="working\read_proxies_write_csv.py" />
     <Compile Include="time_logger_digital_attendance_system.py" />
     <Compile Include="working\useragent.py" />
