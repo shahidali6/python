@@ -130,5 +130,3 @@ dmypy.json
 *.suo
 *.testlog
 /.vs
-/Selenium/WebScraping/WebScraping/csv_file.csv
-/Selenium/WebScraping/.vs/WebScraping/v17

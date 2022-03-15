@@ -11,26 +11,28 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from common.file.csv_operations import csv_operations
-#for cookies saving and read back
+# for cookies saving and read back
 import pickle
-#for wait
+# for wait
 import time
 from fake_useragent import UserAgent
 
 from common.file.database_operations import database_operations
 
 # function to return avalible and out of stock string
+
 def product_in_stock(args):
-    #Expacted value is Add to Cart
+    # Expacted value is Add to Cart
     add_to_cart = 'Add to Cart'
     avalible = 'avalible'
     not_avalible = 'out of stock'
     if args.strip() == add_to_cart:
-        return avalible 
+        return avalible
     else:
         return not_avalible
 
 # function to return pecentage value for example 5 % OFF
+
 def percentage_value_filter(args):
     string_array = args.strip().split(' ')
     if len(string_array) > 1:
@@ -39,6 +41,7 @@ def percentage_value_filter(args):
         return string_array[0]
 
 # function to return price value for example Rs 55
+
 def price_value_filter(args):
     string_array = args.strip().split(' ')
     if len(string_array) > 1:
@@ -47,8 +50,9 @@ def price_value_filter(args):
         return string_array[0]
 
 # function to return coin value for example + 55
+
 def coin_value_filter(args):
-    #two spaces defined in HTML file that's reason to split with double spaces
+    # two spaces defined in HTML file that's reason to split with double spaces
     string_array = args.strip().split('  ')
     if len(string_array) > 1:
         return string_array[1]
@@ -60,18 +64,18 @@ def coin_value_filter(args):
 #URL = baseURL+ "/lahore_g4060673"
 baseURL = "https://www.airliftexpress.com"
 
-#Fake user agent tested.
-#https://stackoverflow.com/questions/27652543/how-to-use-python-requests-to-fake-a-browser-visit-a-k-a-and-generate-user-agent
+# Fake user agent tested.
+# https://stackoverflow.com/questions/27652543/how-to-use-python-requests-to-fake-a-browser-visit-a-k-a-and-generate-user-agent
 fake_user_agent = UserAgent()
 for x in range(20):
-    print(fake_user_agent.random)   
+    print(fake_user_agent.random)
 
 driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(baseURL)
 time.sleep(5)
 
-#load saved cookies
+# load saved cookies
 cookies = pickle.load(open("airlift_nekapura_sialkot.pkl", "rb"))
 for cookie in cookies:
     driver.add_cookie(cookie)
@@ -79,10 +83,10 @@ file_operat = csv_operations()
 driver.get(baseURL)
 time.sleep(5)
 
-#save cookies
+# save cookies
 #pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
 
-#driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
+# driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
 driver.get('https://www.airliftexpress.com/product-category/promotions')
 
 time.sleep(5)
@@ -101,26 +105,33 @@ while True:
 
     all_products = soup.findAll('div', class_='product-card ng-star-inserted')
     if len(all_products) == 0:
-        all_products = soup.findAll('div', class_='product-card product-na ng-star-inserted')        
+        all_products = soup.findAll(
+            'div', class_='product-card product-na ng-star-inserted')
 
     for product in all_products:
         very_internal = []
-        name = product.find('p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
-        price = product.find('div', class_='pc-cost ng-star-inserted').text.strip()
+        name = product.find(
+            'p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
+        price = product.find(
+            'div', class_='pc-cost ng-star-inserted').text.strip()
         image = product.find('img', class_='pc-img').attrs['src'].strip()
         link = product.find('a', class_='cursor-pointer').attrs['href'].strip()
-        coin = product.find('div', class_='pc-rewards ng-star-inserted').text.strip()
+        coin = product.find(
+            'div', class_='pc-rewards ng-star-inserted').text.strip()
         try:
-            orignal_price = product.find('div', class_='pc-p-old ng-star-inserted').text.strip()
-        except :
+            orignal_price = product.find(
+                'div', class_='pc-p-old ng-star-inserted').text.strip()
+        except:
             orignal_price = '0'
         try:
-            discount_percentage = product.find('div', class_='pc-tag ng-star-inserted').text.strip()
-        except :
+            discount_percentage = product.find(
+                'div', class_='pc-tag ng-star-inserted').text.strip()
+        except:
             discount_percentage = '0'
         try:
-            product_avalible = product.find('button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text.strip()
-        except :
+            product_avalible = product.find(
+                'button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text.strip()
+        except:
             product_avalible = 'Out of Stock'
 
         very_internal.append(name)
@@ -133,18 +144,18 @@ while True:
         very_internal.append(product_in_stock(product_avalible))
         very_internal.append(location)
 
-        #print(name)
-        #print(price_value_filter(price))
-        #print(image)
-        #print(link)
-        #print(coin_value_filter(coin))
-        #print(price_value_filter(orignal_price))
-        #print(percentage_value_filter(discount_percentage))
-        #print(product_in_stock(product_avalible))
-        #print(location)
-        #print('-----------------------------------------------')
+        # print(name)
+        # print(price_value_filter(price))
+        # print(image)
+        # print(link)
+        # print(coin_value_filter(coin))
+        # print(price_value_filter(orignal_price))
+        # print(percentage_value_filter(discount_percentage))
+        # print(product_in_stock(product_avalible))
+        # print(location)
+        # print('-----------------------------------------------')
 
-        #db_operation.insert_data_into_airlift_table(very_internal)
+        # db_operation.insert_data_into_airlift_table(very_internal)
 
         last_product_2 = name
         external_list.append(very_internal)
@@ -164,4 +175,4 @@ while True:
 
 csv = csv_operations()
 stasts = csv.write_csvfile('airlift_product', external_list)
-status = file_operat.save_webpage_source('promotions.html',driver.page_source)
+status = file_operat.save_webpage_source('promotions.html', driver.page_source)

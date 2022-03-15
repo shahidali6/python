@@ -1,9 +1,9 @@
-URL = baseURL+ "/product-category/frozen"
-page = requests.get(URL,cookies_dict)
-curSession = requests.Session() 
+URL = baseURL + "/product-category/frozen"
+page = requests.get(URL, cookies_dict)
+curSession = requests.Session()
 getCookies = curSession.get(URL)
 
-#print(page.text)
+# print(page.text)
 
 soup = BeautifulSoup(page.content, "html.parser")
 
@@ -17,8 +17,7 @@ print("=========================================================")
 
 status = "No element found"
 
-myList = [];
-
+myList = []
 
 for element in allElements:
     innerList = []
@@ -26,23 +25,24 @@ for element in allElements:
         title = element.find("div", class_="a5112ca8").text.strip()
         print(title)
         innerList.append(title)
-    except :
+    except:
         print(status)
         innerList.append(status)
 
     try:
-        priceStart = element.find("div", class_="_52497c97").span.text.strip().replace("Rs", "").replace(",","").strip()
+        priceStart = element.find("div", class_="_52497c97").span.text.strip().replace(
+            "Rs", "").replace(",", "").strip()
         priceEnd = ""
         if '|' in priceStart:
             priceSplit = priceStart.split('|')
-            if len(priceSplit)>0:
+            if len(priceSplit) > 0:
                 finalSplit = priceSplit[0].split('-')
                 priceStart = finalSplit[0]
                 priceEnd = finalSplit[1]
-        print(priceStart  +" | "+priceEnd)
+        print(priceStart + " | "+priceEnd)
         innerList.append(priceStart)
         innerList.append(priceEnd)
-    except :
+    except:
         print("0|0")
         innerList.append(0)
         innerList.append(0)
@@ -51,34 +51,35 @@ for element in allElements:
         location = element.find("span", class_="_424bf2a8").text.strip()[:-1]
         print(location)
         innerList.append(location)
-    except :
+    except:
         print(status)
         innerList.append(status)
-        
+
     try:
         image = element.find("source").get('srcset').strip()
         print(image)
         innerList.append(image)
-    except :
+    except:
         print(status)
         innerList.append(status)
-        
+
     try:
-        link = baseURL+ element.find("div", class_="ee2b0479").a.get('href').strip()
+        link = baseURL + \
+            element.find("div", class_="ee2b0479").a.get('href').strip()
         print(link)
         innerList.append(link)
-    except :
+    except:
         print(status)
         innerList.append(status)
-        
+
     try:
         feature = element.find("span", class_="_151bf64f").text.strip()
         print(feature)
         innerList.append(feature)
-    except :
+    except:
         print(status)
         innerList.append(status)
-    
+
     print(innerList)
     print("--------Next---------")
     if innerList[6] == status:

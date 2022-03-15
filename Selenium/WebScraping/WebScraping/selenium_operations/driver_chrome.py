@@ -60,15 +60,15 @@ class driver_chrome:
             getElement = driver.find_element_by_xpath(countryXpath)
             # send input
             getElement.send_keys(countryText)
-            #getElement.send_keys(Keys.ARROW_DOWN)
+            # getElement.send_keys(Keys.ARROW_DOWN)
             driver.implicitly_wait(delay)
             # send keyboard input
             getElement.send_keys(Keys.RETURN)
-            #getElement.send_keys(Keys.TAB)
+            # getElement.send_keys(Keys.TAB)
             getElement = driver.find_element_by_xpath(cityxPath)
             getElement.send_keys(cityText)
             driver.implicitly_wait(delay)
-            #getElement.send_keys(Keys.ARROW_DOWN)
+            # getElement.send_keys(Keys.ARROW_DOWN)
             # send keyboard input
             getElement.send_keys(Keys.RETURN)
             driver.implicitly_wait(delay)
@@ -83,16 +83,18 @@ class driver_chrome:
             driver.implicitly_wait(delay+1)
 
             time.sleep(5)
-            getElement = driver.find_element_by_xpath(continueButtonxPath).click()
+            getElement = driver.find_element_by_xpath(
+                continueButtonxPath).click()
             driver.implicitly_wait(delay+1)
 
             s = requests.Session()
             # Set correct user agent
-            selenium_user_agent = driver.execute_script("return navigator.userAgent;")
+            selenium_user_agent = driver.execute_script(
+                "return navigator.userAgent;")
             s.headers.update({"user-agent": selenium_user_agent})
 
             cookkkk = driver.get_cookies()
-            
+
             f = open("receivedCookies.txt", "w")
 
             for x in cookkkk:
@@ -100,16 +102,16 @@ class driver_chrome:
             f.close()
 
             cooooookies = {}
-            #for cookie in driver.get_cookies():
+            # for cookie in driver.get_cookies():
             #    s.cookies.set(cookie['name'], cookie['value'], domain=cookie['domain'])
-            time.sleep(5) #This is the fix
+            time.sleep(5)  # This is the fix
 
             cookiesItesm = driver.get_cookies()
 
             for cookie in cookiesItesm:
                 s.cookies.set(cookie['name'], cookie['value'])
 
-            status = s.get(https://www.airliftexpress.com/product-category/promotions)
+            status = s.get(https: // www.airliftexpress.com/product-category/promotions)
 
             requestCookiesList = []
 
@@ -119,11 +121,10 @@ class driver_chrome:
                 for key, value in cookie.items():
                     #test =  cookie[cookie['name']] = cookie['value']
                     #one_cookie[cookie['name']] = cookie['value']
-                    one_cookie = {cookie['name']: cookie['value']} 
-                    #one_cookie.update([key] = value)
+                    one_cookie = {cookie['name']: cookie['value']}
+                    # one_cookie.update([key] = value)
 
                 requestCookiesList.append(one_cookie)
-
 
             f = open("requestCookies.txt", "w")
 
@@ -131,20 +132,19 @@ class driver_chrome:
                 f.write(str(x))
             f.close()
 
-            URL = baseURL+ "/product-category/promotions"
+            URL = baseURL + "/product-category/promotions"
             page = s.get(URL, cooooookies)
 
             soup = BeautifulSoup(page.content, "html.parser")
 
             f = open("demofile3.html", "w")
 
-
             f.write(str(page.content))
             f.close()
 
             #results = soup.find(id="ResultsContainer")
             #results = soup.find(class_="scrollable-content")
-            results = soup.find("div",{"class":"scrollable-content"})
+            results = soup.find("div", {"class": "scrollable-content"})
             print(results)
 
             allElements = results.find_all("article", class_="_7e3920c1")
@@ -154,8 +154,8 @@ class driver_chrome:
         except Exception as ex:
             messagebox.showerror("Exception Message", "Exception: " + str(ex))
         #headers = { "User-Agent": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36" }
-        #s = requests.session() 
-        #s.headers.update(headers) 
-        #for cookie in driver.get_cookies(): 
-        #    c = {cookie['name']: cookie['value']} 
+        #s = requests.session()
+        # s.headers.update(headers)
+        # for cookie in driver.get_cookies():
+        #    c = {cookie['name']: cookie['value']}
         #    s.cookies.update(c)

@@ -3,19 +3,20 @@ from bs4 import BeautifulSoup
 from tkinter import messagebox
 
 class beautifulsoup_operations:
-    def read_proxies_sslproxies_org(self):   
+    def read_proxies_sslproxies_org(self):
         try:
             URL = "https://sslproxies.org/"
             page = requests.get(URL)
 
             if page.status_code != 200:
-	            print("Error fetching page")
-	            exit()
+                print("Error fetching page")
+                exit()
 
             soup = BeautifulSoup(page.content, "html.parser")
 
             #all_rows = soup.findAll('tr')
-            proxy_table = soup.findAll(class_='table table-striped table-bordered')
+            proxy_table = soup.findAll(
+                class_='table table-striped table-bordered')
 
             list_all_proxy = []
 
