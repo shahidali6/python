@@ -87,16 +87,22 @@ class csv_operations:
             write.writerows(listToWrite)
 
     def write_list_to_txt(self, fileName, listToWrite):
-        # field names
-        fields = ['Name', 'Branch', 'Year', 'CGPA']
-        fileName = fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.txt'
+        #file name with extenstion
+        fileName = fileName + '.txt'
 
-        with open(fileName, 'w', newline='') as f:
+        with open(fileName, 'a', newline='') as f:
 
-            # using csv.writer method from CSV package
             write = csv.writer(f)
 
-            write.writerow(fields)
             for line in listToWrite:
                 array = line.split(',')
                 write.writerow(array)
+
+    def read_txt_to_list(self, fileName):
+        #file name include text extension
+        fileName = fileName + '.txt'
+        list_to_return = []
+
+        with open(fileName, 'r') as f:
+            list_to_return = f.readlines()
+            return list_to_return
