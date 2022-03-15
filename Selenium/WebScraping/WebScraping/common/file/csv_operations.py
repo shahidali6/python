@@ -85,3 +85,18 @@ class csv_operations:
 
             write.writerow(fields)
             write.writerows(listToWrite)
+
+    def write_list_to_txt(self, fileName, listToWrite):
+        # field names
+        fields = ['Name', 'Branch', 'Year', 'CGPA']
+        fileName = fileName + datetime.datetime.now().strftime("_%Y%m%d_%H%M")+'.txt'
+
+        with open(fileName, 'w', newline='') as f:
+
+            # using csv.writer method from CSV package
+            write = csv.writer(f)
+
+            write.writerow(fields)
+            for line in listToWrite:
+                array = line.split(',')
+                write.writerow(array)
