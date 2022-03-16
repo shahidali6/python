@@ -1,3 +1,4 @@
+from selenium.webdriver.common import desired_capabilities
 from common.beautifulsoup_operations import beautifulsoup_operations
 from common.file.csv_operations import csv_operations
 from useragent import user_agent
@@ -5,6 +6,8 @@ import random
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 impressions = random.randint(3, 10)
 
@@ -14,7 +17,8 @@ bs = beautifulsoup_operations()
 csv = csv_operations()
 #csv.write_list_to_txt('ListofProxy', list_of_proxyies)
 
-listofips = csv.read_txt_to_list('ListofProxy')
+#listofips = csv.read_txt_to_list('ListofProxy')
+listofips = csv.read_txt_to_list('ListofProxy_working')
 
 ua = user_agent()
 
@@ -33,6 +37,19 @@ for x in range(impressions):
 
     PROXY = random.choice(listofips).strip()
 
+    proxy_obj = Proxy()
+    proxy_obj.proxyType = ProxyType.MANUAL
+    proxy_obj.http_proxy = PROXY
+    proxy_obj.ssl_proxy = PROXY
+
+    capabilitie = webdriver.DesiredCapabilities.CHROME
+    proxy_obj.add_to_capabilities(capabilitie)
+
+    chrome = webdriver.Chrome(desired_capabilities=capabilitie)
+
+    #chrome.get('https://whatismyipaddress.com/')
+    chrome.get('https://httpbin.org/ip')
+
     #proxy = Proxy({
     #'proxyType': ProxyType.MANUAL,
     #'httpProxy': PROXY,
@@ -43,13 +60,13 @@ for x in range(impressions):
     #options.proxy = proxy
 
 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument('--proxy-server=%s' % PROXY)
-    chrome = webdriver.Chrome(chrome_options=chrome_options)
-    chrome.set_page_load_timeout(30)
-    #chrome.get('https://www.whatismyip.com/')
+    #chrome_options = webdriver.ChromeOptions()
+    #chrome_options.add_argument('--proxy-server=%s' % PROXY)
+    #chrome = webdriver.Chrome(chrome_options=chrome_options)
+    #chrome.set_page_load_timeout(30)
+    ##chrome.get('https://www.whatismyip.com/')
     #chrome.get('https://whatismyipaddress.com/')
-    chrome.get('https://ppcwebsite.weebly.com')
+    ##chrome.get('https://ppcwebsite.weebly.com')
 
 
 
