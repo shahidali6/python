@@ -9,6 +9,55 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import os
+
+torexe = os.popen(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
+profile = FirefoxProfile(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
+profile.set_preference('network.proxy.type', 1)
+profile.set_preference('network.proxy.socks', '127.0.0.1')
+profile.set_preference('network.proxy.socks_port', 9050)
+profile.set_preference("network.proxy.socks_remote_dns", False)
+profile.update_preferences()
+driver = webdriver.Firefox(firefox_profile= profile, executable_path='geckodriver.exe')
+#driver.get("http://check.torproject.org")
+#driver.get("https://whatismyipaddress.com/")
+#driver.get("https://httpbin.org/ip")
+driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
+
+
+
+
+
+
+binary = FirefoxBinary(r"C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe")
+profile = FirefoxProfile(r"C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default")
+
+# Configured profile settings.
+
+proxyIP = "127.0.0.1"
+proxyPort = 9050
+
+proxy_settings = {"network.proxy.type":1,
+    "network.proxy.socks": proxyIP,
+    "network.proxy.socks_port": proxyPort,
+    "network.proxy.socks_remote_dns": False,
+}
+driver = webdriver.Firefox(firefox_binary=binary,proxy=proxy_settings)
+
+def interactWithSite(driver):
+
+    driver.get("https://whatismyipaddress.com/")    
+    #driver.get("https://www.google.com")    
+    driver.save_screenshot("screenshot.png")
+
+interactWithSite(driver)
+
+
+
+
+
 impressions = random.randint(3, 10)
 
 bs = beautifulsoup_operations()
