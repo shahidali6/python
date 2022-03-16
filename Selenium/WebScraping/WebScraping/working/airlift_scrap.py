@@ -16,6 +16,7 @@ import pickle
 # for wait
 import time
 from fake_useragent import UserAgent
+from useragent import user_agent
 
 from common.file.database_operations import database_operations
 
@@ -64,11 +65,9 @@ def coin_value_filter(args):
 #URL = baseURL+ "/lahore_g4060673"
 baseURL = "https://www.airliftexpress.com"
 
-# Fake user agent tested.
-# https://stackoverflow.com/questions/27652543/how-to-use-python-requests-to-fake-a-browser-visit-a-k-a-and-generate-user-agent
-fake_user_agent = UserAgent()
-for x in range(20):
-    print(fake_user_agent.random)
+user_agent = user_agent()
+
+new_user_agent = user_agent.random_user_agent()
 
 driver = webdriver.Chrome()
 driver.maximize_window()
