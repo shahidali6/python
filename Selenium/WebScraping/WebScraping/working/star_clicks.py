@@ -13,6 +13,7 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 import os
 
+#https://stackoverflow.com/questions/53942553/how-to-connect-to-tor-browser-using-python
 torexe = os.popen(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
 profile = FirefoxProfile(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
 profile.set_preference('network.proxy.type', 1)
@@ -23,7 +24,7 @@ profile.update_preferences()
 driver = webdriver.Firefox(firefox_profile= profile, executable_path='geckodriver.exe')
 #driver.get("http://check.torproject.org")
 #driver.get("https://whatismyipaddress.com/")
-#driver.get("https://httpbin.org/ip")
+driver.get("https://httpbin.org/ip")
 driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
 
 
