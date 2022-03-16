@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f41e68b4-039d-45ed-8ec7-2aaccb32ccff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>working\airlift_scrap.py</StartupFile>
+    <StartupFile>working\star_clicks.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -46,6 +46,7 @@
   <ItemGroup>
     <Folder Include="common\" />
     <Folder Include="common\file\" />
+    <Folder Include="final\" />
     <Folder Include="working\" />
     <Folder Include="selenium_operations\" />
   </ItemGroup>
