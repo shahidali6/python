@@ -16,8 +16,10 @@ import os
 
 for x in range(12):
     #https://stackoverflow.com/questions/53942553/how-to-connect-to-tor-browser-using-python
-    torexe = os.popen(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
-    profile = FirefoxProfile(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
+    #torexe = os.popen(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
+    #profile = FirefoxProfile(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
+    torexe = os.popen(r'D:\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
+    profile = FirefoxProfile(r'D:\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
     profile.set_preference('network.proxy.type', 1)
     profile.set_preference('network.proxy.socks', '127.0.0.1')
     profile.set_preference('network.proxy.socks_port', 9050)
@@ -27,8 +29,15 @@ for x in range(12):
     #driver.get("http://check.torproject.org")
     #driver.get("https://whatismyipaddress.com/")
     driver.get("https://httpbin.org/ip")
+    #driver.get("http://ppcwebsite.weebly.com/")
+    #time.sleep(random.randint(5, 15))
     driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
-    time.sleep(random.randint(3, 10))
+    time.sleep(5)
+    driver.find_element_by_css_selector('tr td font a').click()
+    #driver.find_elements_by_xpath('//*[@id="table16"]/tbody/tr[1]/td/font/a').click()
+    time.sleep(random.randint(6, 18))
+    #driver.get("http://check.torproject.org")
+    #time.sleep(random.randint(3, 6))
     driver.close()
 
 
