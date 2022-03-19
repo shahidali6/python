@@ -25,9 +25,20 @@ def extract_ip(body_text):
         return found_ip
     return found_ip
 
+def check_error_strings(website_string):
+    list_of_pagenotopen_strings = ['ERR_TUNNEL_CONNECTION_FAILED',
+                                   'This site can’t be reached' ]
+    for string in list_of_pagenotopen_strings:
+        if string in website_string:
+            return True
+    return False
+
 file_operation = csv_operations()
 
 listofproxies = file_operation.read_txt_to_list('new_proxies')
+
+ad_links = ['http://simplehtmllink.s3-website.me-south-1.amazonaws.com', 
+            'http://ppcwebsite.weebly.com']
 
 last_found_ip = ''
 
@@ -47,27 +58,47 @@ for loop in range(100):
     #Removes navigator.webdriver flag
     #For ChromeDriver version 79.0.3945.16 or over
     option.add_argument('--disable-blink-features=AutomationControlled')
+
+    user_agent_obj = user_agent()
+    chrome_user_agent = ''
+    for chrome in range(100):
+        agent = user_agent_obj.random_user_agent()
+        if 'chrome' in agent.lower(): 
+            chrome_user_agent = 'user-agent='+agent
+            break
+    del user_agent_obj
+
+    if chrome_user_agent == '':
+        chrome_user_agent = 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+
+    option.add_argument("window-size=1000,650")
+    option.add_argument(chrome_user_agent)
+
     driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
 
     #Remove navigator.webdriver Flag using JavaScript
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
     #driver = webdriver.Chrome(desired_capabilities=capabilities)
-    driver.get("http://ppcwebsite.weebly.com")
     try:
-        driver.find_element_by_css_selector('tr td font a').click()
-        time.sleep(random.randint(10, 30))
+        driver.get("https://httpbin.org/ip")
+        time.sleep(2)
+        current_ip_raw = driver.find_element_by_xpath("/html/body").text
+        current_ip = extract_ip(current_ip_raw)
+        print('Current IP: '+current_ip)    
     except :
-        driver.close()
-        continue
+        pass
+    
+    try:
+        driver.get(random.choice(ad_links))
+        driver.find_element_by_css_selector('tr td font a').click()
+        time.sleep(5)
 
-    driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
-    try:
-        driver.find_element_by_css_selector('tr td font a').click()
+        if check_error_strings(driver.page_source):
+            break
         time.sleep(random.randint(10, 30))
     except :
-        driver.close()
-        continue
+        pass
     driver.close()
 
 
@@ -189,7 +220,7 @@ csv = csv_operations()
 #listofips = csv.read_txt_to_list('ListofProxy')
 listofips = csv.read_txt_to_list('ListofProxy_working')
 
-ua = user_agent()
+ua = user_agent_obj()
 
 loop_counter = 1
 #use request for star-clicks impression
