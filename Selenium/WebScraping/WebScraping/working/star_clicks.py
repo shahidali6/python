@@ -44,6 +44,7 @@ last_found_ip = ''
 
 for loop in range(100):
     one_proxy = random.choice(listofproxies)
+    delay = 0
     proxy = Proxy({
         'proxyType': ProxyType.MANUAL,
         'httpProxy': one_proxy,
@@ -61,17 +62,24 @@ for loop in range(100):
 
     user_agent_obj = user_agent()
     chrome_user_agent = ''
-    for chrome in range(100):
+
+    while chrome_user_agent == '':
         agent = user_agent_obj.random_user_agent()
         if 'chrome' in agent.lower(): 
             chrome_user_agent = 'user-agent='+agent
-            break
-    del user_agent_obj
+            del user_agent_obj
+
+    #for chrome in range(100):
+    #    agent = user_agent_obj.random_user_agent()
+    #    if 'chrome' in agent.lower(): 
+    #        chrome_user_agent = 'user-agent='+agent
+    #        break
+    #del user_agent_obj
 
     if chrome_user_agent == '':
         chrome_user_agent = 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
 
-    option.add_argument("window-size=1000,650")
+    option.add_argument("window-size=1200,650")
     option.add_argument(chrome_user_agent)
 
     driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
@@ -82,7 +90,8 @@ for loop in range(100):
     #driver = webdriver.Chrome(desired_capabilities=capabilities)
     try:
         driver.get("https://httpbin.org/ip")
-        time.sleep(2)
+        delay = 2
+        time.sleep(delay)
         current_ip_raw = driver.find_element_by_xpath("/html/body").text
         current_ip = extract_ip(current_ip_raw)
         print('Current IP: '+current_ip)    
@@ -92,11 +101,14 @@ for loop in range(100):
     try:
         driver.get(random.choice(ad_links))
         driver.find_element_by_css_selector('tr td font a').click()
-        time.sleep(5)
+        delay = 5
+        time.sleep(delay)
 
         if check_error_strings(driver.page_source):
-            break
-        time.sleep(random.randint(10, 30))
+            delay = 0
+        else:
+            delay = random.randint(10, 30)
+        time.sleep(delay)
     except :
         pass
     driver.close()
