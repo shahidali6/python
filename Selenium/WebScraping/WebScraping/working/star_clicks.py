@@ -25,8 +25,84 @@ def extract_ip(body_text):
         return found_ip
     return found_ip
 
+file_operation = csv_operations()
+
+listofproxies = file_operation.read_txt_to_list('new_proxies')
+
 last_found_ip = ''
-for x in range(12):
+
+for loop in range(100):
+    one_proxy = random.choice(listofproxies)
+    proxy = Proxy({
+        'proxyType': ProxyType.MANUAL,
+        'httpProxy': one_proxy,
+        'sslProxy': one_proxy,
+        'noProxy': ''})
+    accept_insecure_certificate = "'acceptInsecureCerts':'True'"
+    capabilities = webdriver.DesiredCapabilities.CHROME
+    proxy.add_to_capabilities(capabilities)
+
+    #Open Browser
+    option = webdriver.ChromeOptions()
+    #Removes navigator.webdriver flag
+    #For ChromeDriver version 79.0.3945.16 or over
+    option.add_argument('--disable-blink-features=AutomationControlled')
+    driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
+
+    #Remove navigator.webdriver Flag using JavaScript
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+    #driver = webdriver.Chrome(desired_capabilities=capabilities)
+    driver.get("http://ppcwebsite.weebly.com")
+    try:
+        driver.find_element_by_css_selector('tr td font a').click()
+        time.sleep(random.randint(10, 30))
+    except :
+        driver.close()
+        continue
+
+    driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
+    try:
+        driver.find_element_by_css_selector('tr td font a').click()
+        time.sleep(random.randint(10, 30))
+    except :
+        driver.close()
+        continue
+    driver.close()
+
+
+    ##driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
+    #time.sleep(5)
+    #try:
+    #    pass
+    #except :
+    #    pass
+    
+    #driver.find_element_by_css_selector('tr td font a').click()
+
+    ##driver.get("https://httpbin.org/ip")
+
+    #time.sleep(25)
+    #driver.close()
+
+
+for one_proxy in listofproxies:
+    proxy_url = one_proxy
+    proxy = Proxy({
+        'proxyType': ProxyType.MANUAL,
+        'httpProxy': proxy_url,
+        'sslProxy': proxy_url,
+        'noProxy': ''})
+
+    capabilities = webdriver.DesiredCapabilities.CHROME
+    proxy.add_to_capabilities(capabilities)
+
+    driver = webdriver.Chrome(desired_capabilities=capabilities)
+    driver.get("http://simplehtmllink.s3-website.me-south-1.amazonaws.com/")
+    driver.get("https://httpbin.org/ip")
+
+
+
     #https://stackoverflow.com/questions/53942553/how-to-connect-to-tor-browser-using-python
     torexe = os.popen(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
     profile = FirefoxProfile(r'C:\Users\msaddique\Desktop\TorBrowser\Browser\TorBrowser\Data\Browser\profile.default')
@@ -117,7 +193,7 @@ ua = user_agent()
 
 loop_counter = 1
 #use request for star-clicks impression
-for x in range(impressions):
+for one_proxy in range(impressions):
     #proxy = {'https': random.choice(listofips).strip()}
     ##print(ua.random_user_agent())
     ##header = {'User-Agent':str(ua.random_user_agent())
