@@ -1,0 +1,13 @@
+{
+    "Bypass":
+    {
+        "Current" :[300],
+        "Voltage" :[200],
+        "Clamp_Status" :
+        {
+            "staus_boarId" : 4,
+            "status_abc" : 2,
+            "status_xyz" : 4
+        }
+    }
+}
