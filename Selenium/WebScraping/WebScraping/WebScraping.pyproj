@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f41e68b4-039d-45ed-8ec7-2aaccb32ccff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>working\star_clicks.py</StartupFile>
+    <StartupFile>working\trustpilot.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -38,6 +38,7 @@
     <Compile Include="working\olx_scrap.py" />
     <Compile Include="working\read_proxies_write_csv.py" />
     <Compile Include="time_logger_digital_attendance_system.py" />
+    <Compile Include="working\trustpilot.py" />
     <Compile Include="working\useragent.py" />
     <Compile Include="WebScraping.py" />
   </ItemGroup>
