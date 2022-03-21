@@ -41,7 +41,8 @@ file_operation = csv_operations()
 listofproxies = file_operation.read_txt_to_list('new_proxies')
 
 ad_links = ['http://simplehtmllink.s3-website.me-south-1.amazonaws.com', 
-            'http://ppcwebsite.weebly.com']
+            'http://ppcwebsite.weebly.com', 
+            'https://www.star-clicks.com/secure/ads.php?pid=66436614452237464']
 
 last_found_ip = ''
 loop_counter = 0
@@ -81,24 +82,12 @@ while loop_counter < loop_limit:
     #driver.implicitly_wait(60)
     #Remove navigator.webdriver Flag using JavaScript
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-
-    #driver = webdriver.Chrome(desired_capabilities=capabilities)
-    #try:
-    #    delay = 2
-    #    driver.get("https://ip.me/")
-    #    time.sleep(delay)
-    #    driver.get("https://httpbin.org/ip")
-    #    time.sleep(delay)
-    #    current_ip_raw = driver.find_element_by_xpath("/html/body").text
-    #    current_ip = extract_ip(current_ip_raw)
-    #    print('Current IP: '+current_ip)    
-    #except :
-    #    pass
     
     try:
         driver.get(random.choice(ad_links))
-        driver.find_element_by_css_selector('tr td font a').click()
         delay = 10
+        time.sleep(delay)
+        driver.find_element_by_css_selector('tr td font a').click()
         time.sleep(delay)
 
         if check_error_strings(driver.page_source):
@@ -108,6 +97,9 @@ while loop_counter < loop_limit:
             delay = random.randint(10, 30)
             loop_counter = loop_counter + 1
         time.sleep(delay)
+        driver.close()
     except :
-        pass
-    driver.close()
+        try:
+            driver.close()
+        except :
+            pass
