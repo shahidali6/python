@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f41e68b4-039d-45ed-8ec7-2aaccb32ccff</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>working\trustpilot.py</StartupFile>
+    <StartupFile>working\star_clicks.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

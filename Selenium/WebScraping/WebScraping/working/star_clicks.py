@@ -30,7 +30,8 @@ def check_error_strings(website_string):
                                    'This site can’t be reached',
                                    'Access Denied',
                                    'ERR_NETWORK_CHANGED',
-                                   'Your connection was interrupted']
+                                   'Your connection was interrupted',
+                                   'Please Surf Safely']
     for string in list_of_pagenotopen_strings:
         if string in website_string:
             return True
@@ -78,7 +79,11 @@ while loop_counter < loop_limit:
     option.add_argument(f"window-size={random_width},{random_height}")
     option.add_argument(chrome_user_agent)
 
-    driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
+    try:
+        driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
+    except :
+        driver.close()
+        continue
     #driver.implicitly_wait(60)
     #Remove navigator.webdriver Flag using JavaScript
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
