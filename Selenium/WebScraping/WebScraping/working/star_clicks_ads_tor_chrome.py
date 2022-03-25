@@ -1,0 +1,111 @@
+from selenium.webdriver.common import desired_capabilities
+from common.beautifulsoup_operations import beautifulsoup_operations
+from common.file.csv_operations import csv_operations
+from useragent import user_agent
+import random
+import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+import time
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import os
+
+def extract_ip(body_text):
+    raw_string = body_text.split('"')
+    found_ip = 'No IP found'
+    if len(raw_string) > 4:
+        found_ip = raw_string[3]
+        return found_ip
+    if len(raw_string) > 2:
+        found_ip = raw_string[1]
+        return found_ip
+    return found_ip
+
+def check_error_strings(website_string):
+    list_of_pagenotopen_strings = ['ERR_TUNNEL_CONNECTION_FAILED',
+                                   'This site can’t be reached',
+                                   'Access Denied',
+                                   'ERR_NETWORK_CHANGED',
+                                   'Your connection was interrupted',
+                                   'Please Surf Safely']
+    for string in list_of_pagenotopen_strings:
+        if string in website_string:
+            return True
+    return False
+
+ad_links = ['http://simplehtmllink.s3-website.me-south-1.amazonaws.com', 
+            'http://ppcwebsite.weebly.com', 
+            'https://www.star-clicks.com/secure/ads.php?pid=66436614452237464']
+
+last_found_ip = ''
+loop_counter = 0
+loop_limit = 100
+#https://piprogramming.org/articles/How-to-make-Selenium-undetectable-and-stealth--7-Ways-to-hide-your-Bot-Automation-from-Detection-0000000017.html
+while loop_counter < loop_limit:
+    # To use Tor's SOCKS proxy server with chrome, include the socks protocol in the scheme with the --proxy-server option
+    # PROXY = "socks5://127.0.0.1:9150" # IP:PORT or HOST:PORT
+    torexe = os.popen(r'D:\TorBrowser\Browser\TorBrowser\Tor\tor.exe')
+    PROXY = "socks5://localhost:9050" # IP:PORT or HOST:PORT
+
+    delay = 0
+    proxy = Proxy({
+        'proxyType': ProxyType.MANUAL,
+        'httpProxy': PROXY,
+        'sslProxy': PROXY,
+        'noProxy': ''})
+    capabilities = webdriver.DesiredCapabilities.CHROME
+    proxy.add_to_capabilities(capabilities)
+
+    #Open Browser
+    option = webdriver.ChromeOptions()
+    #Removes navigator.webdriver flag
+    #For ChromeDriver version 79.0.3945.16 or over
+    option.add_argument('--disable-blink-features=AutomationControlled')
+    option.setExperimentalOption("excludeSwitches", Arrays["disable-popup-blocking"]
+
+    user_agent_obj = user_agent()
+    chrome_user_agent = ''
+
+    while chrome_user_agent == '':
+        agent = user_agent_obj.random_user_agent()
+        if 'chrome' in agent.lower(): 
+            chrome_user_agent = 'user-agent='+agent
+            del user_agent_obj
+    random_width = random.randint(700, 1300)
+    random_height = random.randint(700, 1000)
+    option.add_argument(f"window-size={random_width},{random_height}")
+    option.add_argument(chrome_user_agent)
+
+    try:
+        driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
+    except :
+        driver.close()
+        continue
+    #driver.implicitly_wait(60)
+    #Remove navigator.webdriver Flag using JavaScript
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    
+    try:
+        driver.get(random.choice(ad_links))
+        delay = 10
+        time.sleep(delay)
+        driver.find_element_by_css_selector('tr td font a').click()
+        time.sleep(delay)
+
+        if check_error_strings(driver.page_source):
+            delay = 0
+        else:
+            driver.implicitly_wait(60)
+            delay = random.randint(10, 30)
+            loop_counter = loop_counter + 1
+        time.sleep(delay)
+        driver.close()
+    except :
+        try:
+            driver.close()
+        except :
+            pass
