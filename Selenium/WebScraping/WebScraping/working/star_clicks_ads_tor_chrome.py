@@ -58,6 +58,7 @@ while loop_counter < loop_limit:
         'sslProxy': PROXY,
         'noProxy': ''})
     capabilities = webdriver.DesiredCapabilities.CHROME
+    capabilities['acceptInsecureCerts'] = True
     proxy.add_to_capabilities(capabilities)
 
     #Open Browser
@@ -65,7 +66,8 @@ while loop_counter < loop_limit:
     #Removes navigator.webdriver flag
     #For ChromeDriver version 79.0.3945.16 or over
     option.add_argument('--disable-blink-features=AutomationControlled')
-    option.setExperimentalOption("excludeSwitches", Arrays["disable-popup-blocking"]
+    option.add_experimental_option('excludeSwitches', ['load-extension', 'enable-automation'])
+    #option.setExperimentalOption("excludeSwitches", Arrays["disable-popup-blocking"])
 
     user_agent_obj = user_agent()
     chrome_user_agent = ''
