@@ -81,6 +81,8 @@ while loop_counter < loop_limit:
     random_height = random.randint(700, 1000)
     option.add_argument(f"window-size={random_width},{random_height}")
     option.add_argument(chrome_user_agent)
+    option.add_argument('--ignore-certificate-errors')
+    option.add_argument('--incognito')
 
     try:
         driver = webdriver.Chrome(executable_path='chromedriver.exe',options=option, desired_capabilities=capabilities)
