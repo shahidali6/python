@@ -19,6 +19,7 @@ import mysql.connector
 from common.file.database_operations import database_operations
 #importing the os module
 import os
+from common.file.file_operations import fileOperations
 
 
 # function to return avalible and out of stock string
@@ -93,6 +94,8 @@ def unique_listoflist(list_data):
     unique_data = [list(x) for x in set(tuple(x) for x in list_data)]
     return unique_data
 
+#listOfAllFiles = fileOperations.ListOfFileAndDirectoriesCurrentDirectory()
+#cookiesfiles = fileOperations.ListFileCurrentDirectory('pkl')
 
 #Lahore: "lahore_g4060673"
 #baseURL = "https://www.olx.com.pk"
