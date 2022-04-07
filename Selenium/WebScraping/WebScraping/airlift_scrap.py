@@ -36,6 +36,19 @@ def insert_data_into_airlift_table(list_to_insert_database):
         mycursor.execute(sql, list_to_insert_database)
         mydb.commit()
 
+        # Insert Data into MySQL
+        mydb = mysql.connector.connect(
+            host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com",
+            user="dbadmin",
+            password="Aesn8POSA2kTzjt1GAk9",
+            database="airlift"
+        )
+        mycursor = mydb.cursor()
+
+        sql = "INSERT INTO airlift (name,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        mycursor.execute(sql, list_to_insert_database)
+        mydb.commit()
+
         #print(mycursor.rowcount, looppppppp)
 
 def product_in_stock(args):
@@ -106,10 +119,13 @@ soup = BeautifulSoup(driver.page_source, "html.parser")
                 #class_='table table-striped table-bordered')
 all_links_raw = soup.select('ecp-category nav ul li a')
 all_links = []
+all_link_categories = []
 loop_counter = 1
 for link in all_links_raw:
     full_link = base_url + link.attrs['href']
+    category_name = link.text
     all_links.append(full_link)
+    all_link_categories.append(category_name)
     print(full_link)
     loop_counter += 1
 
