@@ -22,36 +22,21 @@ from common.file.database_operations import database_operations
 import os
 from common.file.file_operations import fileOperations
 
-
 # function to return avalible and out of stock string
-def insert_data_into_airlift_table(list_to_insert_database):
+def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, query):
         # Insert Data into MySQL
         mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="python"
+            host=host,
+            user=user,
+            password=passw,
+            database=database
         )
         mycursor = mydb.cursor()
 
-        sql = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        mycursor.execute(sql, list_to_insert_database)
+        sql = query
+        mycursor.execute(sql, list_to_insert)
         mydb.commit()
-
-        # Insert Data into MySQL
-        mydb = mysql.connector.connect(
-            host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com",
-            user="dbadmin",
-            password="Aesn8POSA2kTzjt1GAk9",
-            database="airlift"
-        )
-        mycursor = mydb.cursor()
-
-        sql = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        mycursor.execute(sql, list_to_insert_database)
-        mydb.commit()
-
-        #print(mycursor.rowcount, looppppppp)
+        mydb.close()
 
 def product_in_stock(args):
     # Expacted value is Add to Cart
@@ -64,7 +49,6 @@ def product_in_stock(args):
         return not_avalible
 
 # function to return pecentage value for example 5 % OFF
-
 def percentage_value_filter(args):
     string_array = args.strip().split(' ')
     if len(string_array) > 1:
@@ -73,7 +57,6 @@ def percentage_value_filter(args):
         return string_array[0]
 
 # function to return price value for example Rs 55
-
 def price_value_filter(args):
     string_array = args.strip().split(' ')
     if len(string_array) > 1:
@@ -82,7 +65,6 @@ def price_value_filter(args):
         return string_array[0]
 
 # function to return coin value for example + 55
-
 def coin_value_filter(args):
     # two spaces defined in HTML file that's reason to split with double spaces
     string_array = args.strip().split('  ')
@@ -94,6 +76,17 @@ def coin_value_filter(args):
 def unique_listoflist(list_data):
     unique_data = [list(x) for x in set(tuple(x) for x in list_data)]
     return unique_data
+
+def airlift_links_categories(list_raw):
+    all_links = []
+    all_link_categories = []
+    for link in all_links_raw:
+        full_link = base_url + link.attrs['href']
+        category_name = link.text
+        all_links.append(full_link)
+        all_link_categories.append(category_name)
+        print(full_link + ' [' + category_name +']')
+        return all_links, all_link_categories
 
 #listOfAllFiles = fileOperations.ListOfFileAndDirectoriesCurrentDirectory()
 cookiesfiles = fileOperations.ListFileCurrentDirectory('pkl')
@@ -126,25 +119,16 @@ for cookie in cookiesfiles:
     #all_links = soup.select_one('ecp-app-side-panel aside ecp-category nav ul')
                     #class_='table table-striped table-bordered')
     all_links_raw = soup.select('ecp-category nav ul li a')
-    all_links = []
-    all_link_categories = []
-    loop_counter = 1
-    for link in all_links_raw:
-        full_link = base_url + link.attrs['href']
-        category_name = link.text
-        all_links.append(full_link)
-        all_link_categories.append(category_name)
-        print(full_link)
-        loop_counter += 1
+
+    all_links, all_link_categories  = airlift_links_categories(all_links_raw)
 
     # save cookies
     #pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
 
-    # driver.get('https://www.airliftexpress.com/product-category/promotions?page=50')
-    #driver.get('https://www.airliftexpress.com/product-category/promotions')
     all_item_list = []
     start_time=time.time()
 
+    loopCounter = 0
     for link in all_links:
         driver.get(link)
         driver.execute_script("document.body.style.zoom='zoom 75%'")
@@ -207,6 +191,7 @@ for cookie in cookiesfiles:
                     product_avalible = 'Out of Stock'
 
                 very_internal.append(name)
+                very_internal.append(all_link_categories[loopCounter])
                 very_internal.append(price_value_filter(price))
                 very_internal.append(image)
                 very_internal.append(link)
@@ -241,6 +226,7 @@ for cookie in cookiesfiles:
         #stasts = csv.write_csvfile('airlift_product', external_list)
         #status = file_operat.save_webpage_source('promotions.html', driver.page_source)
         all_item_list.extend(external_list)
+        loopCounter +=1
 
     print(total_time_seconds)
     csv = csv_operations()
@@ -249,9 +235,24 @@ for cookie in cookiesfiles:
     unique_list = unique_listoflist(all_item_list)
 
     stasts = csv.write_csvfile('airlift_product_full_unique', unique_list)
+    #add dat into local database
+    for row in unique_list:
+        query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        host="localhost",
+        user="root",
+        password="",
+        database="python"
+        insert_data_into_mysql_table(row, host, database, user, password, query)
+        time.sleep(0.01)
 
-    for link in unique_list:
-        insert_data_into_airlift_table(link)
+    #add dat into aws database
+    for row in unique_list:
+        query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com",
+        user="dbadmin",
+        password="Aesn8POSA2kTzjt1GAk9",
+        database="airlift"
+        insert_data_into_mysql_table(row, host, database, user, password, query)
         time.sleep(0.01)
 
     driver.close()
