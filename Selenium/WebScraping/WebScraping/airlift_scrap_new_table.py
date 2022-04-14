@@ -352,7 +352,7 @@ for cookie in cookiesfiles:
     #add dat into aws database
     for row in unique_list:
         query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com",
+        host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com"
         user="dbadmin"
         password="Aesn8POSA2kTzjt1GAk9"
         database="airlift"
