@@ -21,6 +21,7 @@ from common.file.database_operations import database_operations
 #importing the os module
 import os
 from common.file.file_operations import fileOperations
+from urllib.parse import urlparse
 
 # function to return avalible and out of stock string
 def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, query):
@@ -116,13 +117,13 @@ def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, qu
                 stock_id = mycursor.lastrowid
 
         if column[0] == 'source':
-            querrrr = f'INSERT IGNORE INTO source (source_name) VALUES (\'{list_to_insert[1]}\')'
+            querrrr = f'INSERT IGNORE INTO source (source_name) VALUES (\'{list_to_insert[10]}\')'
             mycursor.execute(querrrr)
             mydb.commit()
             querrrr=''
             # Last row was ignored                
             if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT source_id FROM source WHERE  source_name = \'{list_to_insert[4]}\';')
+                mycursor.execute(f'SELECT source_id FROM source WHERE  source_name = \'{list_to_insert[10]}\';')
                 rows = mycursor.fetchall()
                 source_id = rows[0][0]
             else:
@@ -134,6 +135,7 @@ def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, qu
     list_to_insert[4] = link_id
     list_to_insert[8] = stock_id
     list_to_insert[9] = location_id
+    list_to_insert[10] = source_id
 
     #print[column[0] for column in cursor.fetchall()]
 
@@ -204,8 +206,8 @@ for cookie in cookiesfiles:
     driver = webdriver.Chrome()
     driver.maximize_window()
     driver.get(base_url)
-    driver.execute_script("document.body.style.zoom='70%'")
-    time.sleep(5)
+    #driver.execute_script("document.body.style.zoom='70%'")
+    #time.sleep(5)
 
     # load saved cookies
     #cookies = pickle.load(open("airlift_nekapura_sialkot.pkl", "rb"))
@@ -217,6 +219,8 @@ for cookie in cookiesfiles:
         base_url = 'https://www.airliftexpress.com/product-category/grocery'
     driver.get(base_url)
     time.sleep(5)
+   
+    source = urlparse(base_url).hostname
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
@@ -292,7 +296,7 @@ for cookie in cookiesfiles:
                     product_avalible = product.find(
                         'button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text.strip()
                 except:
-                    product_avalible = 'Out of Stock'
+                    product_avalible = 'Not Found'
 
                 very_internal.append(name)
                 very_internal.append(all_link_categories[loopCounter])
@@ -302,8 +306,9 @@ for cookie in cookiesfiles:
                 very_internal.append(coin_value_filter(coin))
                 very_internal.append(price_value_filter(orignal_price))
                 very_internal.append(percentage_value_filter(discount_percentage))
-                very_internal.append(product_in_stock(product_avalible))
+                very_internal.append(product_avalible)
                 very_internal.append(location)
+                very_internal.append(source)
 
                 last_product_2 = name
                 external_list.append(very_internal)
@@ -341,7 +346,7 @@ for cookie in cookiesfiles:
     stasts = csv.write_csvfile('airlift_product_full_unique', unique_list)
     #add dat into local database
     for row in unique_list:
-        query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location, source) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         host_name="localhost"
         user_name="root"
         password=""
@@ -351,7 +356,7 @@ for cookie in cookiesfiles:
 
     #add dat into aws database
     for row in unique_list:
-        query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT INTO airlift_main (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location, source) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         host="db-python-webscraping.cpxtybckovvs.us-east-2.rds.amazonaws.com"
         user="dbadmin"
         password="Aesn8POSA2kTzjt1GAk9"
