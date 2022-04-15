@@ -144,6 +144,7 @@ def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, qu
     mydb.commit()
     mydb.close()
 
+# function to return available and out of stock product
 def product_in_stock(args):
     # Expacted value is Add to Cart
     add_to_cart = 'Add to Cart'
@@ -179,6 +180,7 @@ def coin_value_filter(args):
     else:
         return string_array[0]
 
+### Unique list return all duplicate values removed.
 def unique_listoflist(list_data):
     unique_data = [list(x) for x in set(tuple(x) for x in list_data)]
     return unique_data
@@ -186,7 +188,7 @@ def unique_listoflist(list_data):
 def airlift_links_categories(list_raw):
     all_links = []
     all_link_categories = []
-    for link in all_links_raw:
+    for link in list_raw:
         full_link = base_url + link.attrs['href']
         category_name = link.text
         all_links.append(full_link)
@@ -301,7 +303,7 @@ for cookie in cookiesfiles:
                 very_internal.append(name)
                 very_internal.append(all_link_categories[loopCounter])
                 very_internal.append(price_value_filter(price))
-                very_internal.append(image)
+                very_internal.append(base_url + image)
                 very_internal.append(link)
                 very_internal.append(coin_value_filter(coin))
                 very_internal.append(price_value_filter(orignal_price))
