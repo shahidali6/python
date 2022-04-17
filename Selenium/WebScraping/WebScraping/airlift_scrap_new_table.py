@@ -1,4 +1,3 @@
-
 # Tutorial link: https://realpython.com/beautiful-soup-web-scraper-python/
 # XPATH tutorial reference added https://www.geeksforgeeks.org/how-to-use-xpath-with-beautifulsoup/
 # Very useful tutorial link https://www.dataquest.io/blog/web-scraping-beautifulsoup/
@@ -17,132 +16,13 @@ import pickle
 # for wait
 import time
 import mysql.connector
-from common.file.database_operations import database_operations
+from common.database.database_operations import database_operations
 #importing the os module
 import os
 from common.file.file_operations import fileOperations
 from urllib.parse import urlparse
-
-# function to return avalible and out of stock string
-def insert_data_into_mysql_table(list_to_insert, host, database, user, passw, query):
-    #Feilds
-    product_id = image_id = link_id = product_available_id = location_id = source_id = 0
-    querrrr = ''
-    # Insert Data into MySQL
-    mydb = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=passw,
-        database=database
-    )
-    mycursor = mydb.cursor()
-    mycursor.execute("SHOW columns FROM airlift")
-    for column in mycursor.fetchall():
-        if column[0] == 'name':
-            querrrr = f'INSERT IGNORE INTO airlift_product (product_name) VALUES (\'{list_to_insert[0]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT product_id FROM airlift_product WHERE product_name = \'{list_to_insert[0]}\';')
-                rows = mycursor.fetchall()
-                product_id = rows[0][0]
-            else:
-                product_id = mycursor.lastrowid
-                
-        if column[0] == 'image':
-            querrrr = f'INSERT IGNORE INTO airlift_image (image_link) VALUES (\'{list_to_insert[3]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT image_id FROM airlift_image WHERE image_link = \'{list_to_insert[3]}\';')
-                rows = mycursor.fetchall()
-                image_id = rows[0][0]
-            else:
-                image_id = mycursor.lastrowid
-
-        if column[0] == 'category':
-            querrrr = f'INSERT IGNORE INTO airlift_category (category_name) VALUES (\'{list_to_insert[1]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT category_id FROM airlift_category WHERE category_name = \'{list_to_insert[1]}\';')
-                rows = mycursor.fetchall()
-                category_id = rows[0][0]
-            else:
-                category_id = mycursor.lastrowid
-
-        if column[0] == 'link':
-            querrrr = f'INSERT IGNORE INTO airlift_links (link_value) VALUES (\'{list_to_insert[4]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT link_id FROM airlift_links WHERE link_value = \'{list_to_insert[4]}\';')
-                rows = mycursor.fetchall()
-                link_id = rows[0][0]
-            else:
-                link_id = mycursor.lastrowid
-                
-        if column[0] == 'location':
-            querrrr = f'INSERT IGNORE INTO airlift_location (location_name) VALUES (\'{list_to_insert[9]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT location_id FROM airlift_location WHERE location_name = \'{list_to_insert[9]}\';')
-                rows = mycursor.fetchall()
-                location_id = rows[0][0]
-            else:
-                location_id = mycursor.lastrowid
-
-        if column[0] == 'product_avalible':
-            querrrr = f'INSERT IGNORE INTO airlift_stock (stock_value) VALUES (\'{list_to_insert[8]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT stock_id FROM airlift_stock WHERE  stock_value = \'{list_to_insert[8]}\';')
-                rows = mycursor.fetchall()
-                stock_id = rows[0][0]
-            else:
-                stock_id = mycursor.lastrowid
-
-        if column[0] == 'source':
-            querrrr = f'INSERT IGNORE INTO source (source_name) VALUES (\'{list_to_insert[10]}\')'
-            mycursor.execute(querrrr)
-            mydb.commit()
-            querrrr=''
-            # Last row was ignored                
-            if mycursor.lastrowid == 0:
-                mycursor.execute(f'SELECT source_id FROM source WHERE  source_name = \'{list_to_insert[10]}\';')
-                rows = mycursor.fetchall()
-                source_id = rows[0][0]
-            else:
-                source_id = mycursor.lastrowid
-
-    list_to_insert[0] = product_id
-    list_to_insert[1] = category_id
-    list_to_insert[3] = image_id
-    list_to_insert[4] = link_id
-    list_to_insert[8] = stock_id
-    list_to_insert[9] = location_id
-    list_to_insert[10] = source_id
-
-    #print[column[0] for column in cursor.fetchall()]
-
-    sql = query
-    mycursor.execute(sql, list_to_insert)
-    mydb.commit()
-    mydb.close()
+#Local imports
+from working.grocerapp import grocerapp_operation
 
 # function to return available and out of stock product
 def product_in_stock(args):
@@ -185,6 +65,7 @@ def unique_listoflist(list_data):
     unique_data = [list(x) for x in set(tuple(x) for x in list_data)]
     return unique_data
 
+# extract links and categories from pages source
 def airlift_links_categories(list_raw):
     all_links = []
     all_link_categories = []
@@ -195,6 +76,20 @@ def airlift_links_categories(list_raw):
         all_link_categories.append(category_name)
         print(full_link + ' [' + category_name +']')
         return all_links, all_link_categories
+
+base_url = "https://grocerapp.pk"
+driver = webdriver.Chrome()
+driver.maximize_window()
+driver.get(base_url)
+time.sleep(5)
+grocer_obj = grocerapp_operation()
+links, gategories = grocer_obj.extract_categories_links(base_url, driver.page_source)
+
+for link in links:
+    driver.get(link)
+    list_product = grocer_obj.extract_product_data(base_url, driver.page_source)
+
+
 
 #listOfAllFiles = fileOperations.ListOfFileAndDirectoriesCurrentDirectory()
 cookiesfiles = fileOperations.ListFileCurrentDirectory('pkl')
@@ -243,7 +138,6 @@ for cookie in cookiesfiles:
         #driver.get(link)
         #driver.execute_script("document.body.style.zoom='zoom 75%'")
         time.sleep(5)
-        db_operation = database_operations()
         SCROLL_PAUSE_TIME = 1
         finalbreak = 0
         last_product_1 = ''
@@ -254,36 +148,38 @@ for cookie in cookiesfiles:
 
             location = soup.find('span', class_='dlb-location').text
 
+            all_master_category = soup.select('ecp-home main ecp-l0-links div div div a')
+
             all_products = soup.findAll('div', class_='product-card ng-star-inserted')
             if len(all_products) == 0:
                 all_products = soup.findAll(
                     'div', class_='product-card product-na ng-star-inserted')
-
+            not_found = 'not found'
             for product in all_products:
                 very_internal = []
                 try:
                     name = product.find(
                     'p', class_='pc-title ant-typography ant-typography-ellipsis ant-typography-ellipsis-multiple-line').text.strip()
                 except:
-                    name = '0'
+                    name = not_found
                 try:
                     price = product.find(
                     'div', class_='pc-cost ng-star-inserted').text.strip()
                 except:
-                    price = '0'
+                    price = '-1'
                 try:
                     image = product.find('img', class_='pc-img').attrs['src'].strip()
                 except:
-                    image = '0'
+                    image = not_found
                 try:
                     link = base_url + product.find('a', class_='cursor-pointer').attrs['href'].strip()
                 except:
-                    link = '0'
+                    link = not_found
                 try:
                     coin = product.find(
                     'div', class_='pc-rewards ng-star-inserted').text.strip()
                 except:
-                    coin = '0'            
+                    coin = '-1'            
                 try:
                     orignal_price = product.find(
                         'div', class_='pc-p-old ng-star-inserted').text.strip()
@@ -298,7 +194,7 @@ for cookie in cookiesfiles:
                     product_avalible = product.find(
                         'button', class_='pc-add-btn ant-btn ant-btn-dangerous ant-btn-block ng-star-inserted').text.strip()
                 except:
-                    product_avalible = 'Not Found'
+                    product_avalible = not_found
 
                 very_internal.append(name)
                 very_internal.append(all_link_categories[loopCounter])
@@ -346,6 +242,7 @@ for cookie in cookiesfiles:
     unique_list = unique_listoflist(all_item_list)
 
     stasts = csv.write_csvfile('airlift_product_full_unique', unique_list)
+    db_operation = database_operations()
     #add dat into local database
     for row in unique_list:
         query = "INSERT INTO airlift (name,category,price,image,link,coin,orignal_price,discount_percentage,product_avalible,location, source) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -353,7 +250,8 @@ for cookie in cookiesfiles:
         user_name="root"
         password=""
         database="python"
-        insert_data_into_mysql_table(row, host_name, database, user_name, password, query)
+        db_operation.insert_data_into_mysql_table(row, host_name, database, user_name, password, query)
+        #insert_data_into_mysql_table(row, host_name, database, user_name, password, query)
         time.sleep(0.01)
 
     #add dat into aws database
@@ -363,7 +261,7 @@ for cookie in cookiesfiles:
         user="dbadmin"
         password="Aesn8POSA2kTzjt1GAk9"
         database="airlift"
-        insert_data_into_mysql_table(row, host, database, user, password, query)
+        db_operation.insert_data_into_mysql_table(row, host_name, database, user_name, password, query)
+        #insert_data_into_mysql_table(row, host, database, user, password, query)
         time.sleep(0.01)
-
     driver.close()
