@@ -40,8 +40,36 @@ class database_operations():
 
     def insert_data_into_mysql_table(self, list_to_insert, host, database, user, passw, query):
         #Feilds
-        product_id = image_id = link_id = product_available_id = location_id = source_id = 0
-        querrrr = ''
+        product_id_value = image_id_value = link_id_value = product_available_id_value = location_id_value = source_id_value_value = 0
+        #Column names
+        name = 'name'
+        image = 'image'
+        category = 'category'
+        link  ='link'
+        location = 'location'
+        product_avalible = 'product_avalible'
+        source = 'source'
+
+        #Table names their column names
+        airlift = 'airlift'
+        airlift_product = 'airlift_product'
+        product_name = 'product_name'
+        product_id = 'product_id'
+        airlift_image = 'airlift_image'
+        image_id = 'image_id'
+        image_link = 'image_link'
+        airlift_category = 'airlift_category'
+        category_id = 'category_id'
+        category_name = 'category_name'
+        airlift_links = 'airlift_links'
+        link_value = 'link_value'
+        airlift_location = 'airlift_location'
+        location_name = 'location_name'
+        airlift_stock = 'airlift_stock'
+        stock_value = 'stock_value'
+        source_name = 'source_name'
+
+        query = ''
         # Insert Data into MySQL
         mydb = mysql.connector.connect(
             host=host,
@@ -50,108 +78,106 @@ class database_operations():
             database=database
         )
         mycursor = mydb.cursor()
-        mycursor.execute("SHOW columns FROM airlift")
+        mycursor.execute(f'SHOW columns FROM {airlift}')
         for column in mycursor.fetchall():
-            if column[0] == 'name':
-                querrrr = f'INSERT IGNORE INTO airlift_product (product_name) VALUES (\'{list_to_insert[0]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == name:
+                query = f'INSERT IGNORE INTO {airlift_product} ({product_name}) VALUES (\'{list_to_insert[0]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT product_id FROM airlift_product WHERE product_name = \'{list_to_insert[0]}\';')
+                    mycursor.execute(f'SELECT {product_id} FROM {airlift_product} WHERE {product_name} = \'{list_to_insert[0]}\';')
                     rows = mycursor.fetchall()
-                    product_id = rows[0][0]
+                    product_id_value = rows[0][0]
                 else:
-                    product_id = mycursor.lastrowid
+                    product_id_value = mycursor.lastrowid
                 
-            if column[0] == 'image':
-                querrrr = f'INSERT IGNORE INTO airlift_image (image_link) VALUES (\'{list_to_insert[3]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == image:
+                query = f'INSERT IGNORE INTO {airlift_image} ({image_link}) VALUES (\'{list_to_insert[3]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT image_id FROM airlift_image WHERE image_link = \'{list_to_insert[3]}\';')
+                    mycursor.execute(f'SELECT {image_id} FROM {airlift_image} WHERE {image_link} = \'{list_to_insert[3]}\';')
                     rows = mycursor.fetchall()
-                    image_id = rows[0][0]
+                    image_id_value = rows[0][0]
                 else:
-                    image_id = mycursor.lastrowid
+                    image_id_value = mycursor.lastrowid
 
-            if column[0] == 'category':
-                querrrr = f'INSERT IGNORE INTO airlift_category (category_name) VALUES (\'{list_to_insert[1]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == category:
+                query = f'INSERT IGNORE INTO {airlift_category} ({category_name}) VALUES (\'{list_to_insert[1]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT category_id FROM airlift_category WHERE category_name = \'{list_to_insert[1]}\';')
+                    mycursor.execute(f'SELECT {category_id} FROM {airlift_category} WHERE {category_name} = \'{list_to_insert[1]}\';')
                     rows = mycursor.fetchall()
-                    category_id = rows[0][0]
+                    category_id_value = rows[0][0]
                 else:
-                    category_id = mycursor.lastrowid
+                    category_id_value = mycursor.lastrowid
 
-            if column[0] == 'link':
-                querrrr = f'INSERT IGNORE INTO airlift_links (link_value) VALUES (\'{list_to_insert[4]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == link:
+                query = f'INSERT IGNORE INTO {airlift_links} ({link_value}) VALUES (\'{list_to_insert[4]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT link_id FROM airlift_links WHERE link_value = \'{list_to_insert[4]}\';')
+                    mycursor.execute(f'SELECT {link_id} FROM {airlift_links} WHERE {link_value} = \'{list_to_insert[4]}\';')
                     rows = mycursor.fetchall()
-                    link_id = rows[0][0]
+                    link_id_value = rows[0][0]
                 else:
-                    link_id = mycursor.lastrowid
+                    link_id_value = mycursor.lastrowid
                 
-            if column[0] == 'location':
-                querrrr = f'INSERT IGNORE INTO airlift_location (location_name) VALUES (\'{list_to_insert[9]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == location:
+                query = f'INSERT IGNORE INTO {airlift_location} ({location_name}) VALUES (\'{list_to_insert[9]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT location_id FROM airlift_location WHERE location_name = \'{list_to_insert[9]}\';')
+                    mycursor.execute(f'SELECT {location_id} FROM {airlift_location} WHERE {location_name} = \'{list_to_insert[9]}\';')
                     rows = mycursor.fetchall()
-                    location_id = rows[0][0]
+                    location_id_value = rows[0][0]
                 else:
-                    location_id = mycursor.lastrowid
+                    location_id_value = mycursor.lastrowid
 
-            if column[0] == 'product_avalible':
-                querrrr = f'INSERT IGNORE INTO airlift_stock (stock_value) VALUES (\'{list_to_insert[8]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == product_avalible:
+                query = f'INSERT IGNORE INTO {airlift_stock} ({stock_value}) VALUES (\'{list_to_insert[8]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT stock_id FROM airlift_stock WHERE  stock_value = \'{list_to_insert[8]}\';')
+                    mycursor.execute(f'SELECT {stock_id} FROM {airlift_stock} WHERE  {stock_value} = \'{list_to_insert[8]}\';')
                     rows = mycursor.fetchall()
-                    stock_id = rows[0][0]
+                    stock_id_value = rows[0][0]
                 else:
-                    stock_id = mycursor.lastrowid
+                    stock_id_value = mycursor.lastrowid
 
-            if column[0] == 'source':
-                querrrr = f'INSERT IGNORE INTO source (source_name) VALUES (\'{list_to_insert[10]}\')'
-                mycursor.execute(querrrr)
+            if column[0] == source:
+                query = f'INSERT IGNORE INTO {source} ({source_name}) VALUES (\'{list_to_insert[10]}\')'
+                mycursor.execute(query)
                 mydb.commit()
-                querrrr=''
+                query=''
                 # Last row was ignored                
                 if mycursor.lastrowid == 0:
-                    mycursor.execute(f'SELECT source_id FROM source WHERE  source_name = \'{list_to_insert[10]}\';')
+                    mycursor.execute(f'SELECT {source_id} FROM {source} WHERE {source_name} = \'{list_to_insert[10]}\';')
                     rows = mycursor.fetchall()
-                    source_id = rows[0][0]
+                    source_id_value = rows[0][0]
                 else:
-                    source_id = mycursor.lastrowid
+                    source_id_value = mycursor.lastrowid
 
-        list_to_insert[0] = product_id
-        list_to_insert[1] = category_id
-        list_to_insert[3] = image_id
-        list_to_insert[4] = link_id
-        list_to_insert[8] = stock_id
-        list_to_insert[9] = location_id
-        list_to_insert[10] = source_id
-
-        #print[column[0] for column in cursor.fetchall()]
+        list_to_insert[0] = product_id_value
+        list_to_insert[1] = category_id_value
+        list_to_insert[3] = image_id_value
+        list_to_insert[4] = link_id_value
+        list_to_insert[8] = stock_id_value
+        list_to_insert[9] = location_id_value
+        list_to_insert[10] = source_id_value
 
         sql = query
         mycursor.execute(sql, list_to_insert)
