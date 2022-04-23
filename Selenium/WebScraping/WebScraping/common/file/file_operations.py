@@ -27,3 +27,23 @@ class fileOperations():
     def List_of_all_files(path):
         all_files = os.listdir()
         return all_files
+
+    def WriteTextToFileAppend(self, content, filename):
+        try:
+            fileHandler = open(filename, "a")
+            fileHandler.write(content)
+            fileHandler.close()
+            return True
+        except:
+            print('Oops issue in file writing!')
+            return False
+
+    def WriteTextToFileOverwrite(self, content, filename):
+        try:
+            fileHandler = open(filename, "w")
+            fileHandler.write(content)
+            fileHandler.close()
+            return True
+        except:
+            print('Oops issue in file writing!')
+            return False
